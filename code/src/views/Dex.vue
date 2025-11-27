@@ -170,4 +170,3 @@ const foodsCollectedCount = computed(() => foodDex.value.filter(f => f.collected
 </style>
 
 
-
