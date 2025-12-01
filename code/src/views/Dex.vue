@@ -33,47 +33,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { usePlayerStore } from '@/stores/usePlayerStore'
+import { computed } from 'vue'
 
-// 宠物图鉴数据
-const pokedex = ref([
-  { id:1, name:'小猫', icon:'🐱', rarity:'普通', collected:true },
-  { id:2, name:'小狗', icon:'🐶', rarity:'普通', collected:false },
-  { id:3, name:'麻雀', icon:'🐦', rarity:'普通', collected:false },
-  { id:4, name:'松鼠', icon:'🐿️', rarity:'普通', collected:false },
-  { id:5, name:'白兔', icon:'🐇', rarity:'普通', collected:false },
-  { id:6, name:'锦鲤', icon:'🐟', rarity:'稀有', collected:true },
-  { id:7, name:'电鳗', icon:'⚡', rarity:'稀有', collected:false },
-  { id:8, name:'发光水母', icon:'🪼', rarity:'稀有', collected:false },
-  { id:9, name:'深海章鱼', icon:'🐙', rarity:'稀有', collected:false },
-  { id:10, name:'水晶虾', icon:'🦐', rarity:'稀有', collected:false },
-  { id:11, name:'石像守卫', icon:'🗿', rarity:'史诗', collected:false },
-  { id:12, name:'遗迹灵魂', icon:'👻', rarity:'史诗', collected:false },
-  { id:13, name:'时光蜥蜴', icon:'🦎', rarity:'史诗', collected:false },
-  { id:14, name:'符文猫', icon:'🐈‍⬛', rarity:'史诗', collected:false },
-  { id:15, name:'星尘龟', icon:'🐢', rarity:'史诗', collected:false }
-])
+const store = usePlayerStore()
 
-// 食物图鉴数据
-const foodDex = ref([
-  { id:1, name:'鱼干', icon:'🐟', type:'普通食物', collected:true },
-  { id:2, name:'骨头', icon:'🦴', type:'普通食物', collected:false },
-  { id:3, name:'种子', icon:'🌱', type:'普通食物', collected:false },
-  { id:4, name:'坚果', icon:'🥜', type:'普通食物', collected:false },
-  { id:5, name:'胡萝卜', icon:'🥕', type:'普通食物', collected:false },
-  { id:6, name:'鱼食', icon:'🐠', type:'普通食物', collected:true },
-  { id:7, name:'浮游生物', icon:'🦠', type:'普通食物', collected:false },
-  { id:8, name:'遗迹核心', icon:'🔮', type:'史诗食物', collected:false },
-  { id:9, name:'灵魂精华', icon:'✨', type:'史诗食物', collected:false },
-  { id:10, name:'高级食物', icon:'🌟', type:'通用食物', collected:true }
-])
+// 从 store 获取图鉴数据（保持原有结构）
+const pokedex = computed(() => store.petDex)
+const foodDex = computed(() => store.foodDex)
 
-// 计算已收集数量
-const petsCollectedCount = computed(() => pokedex.value.filter(p => p.collected).length)
-const foodsCollectedCount = computed(() => foodDex.value.filter(f => f.collected).length)
+// 计算已收集数量（保持原有逻辑）
+const petsCollectedCount = computed(() => store.petsCollectedCount)
+const foodsCollectedCount = computed(() => store.foodsCollectedCount)
 </script>
 
 <style scoped>
+/* 你的样式保持不变 */
 .page-wrap { 
   max-width: 1400px; 
   margin: 40px auto; 
@@ -109,7 +84,7 @@ const foodsCollectedCount = computed(() => foodDex.value.filter(f => f.collected
 
 .grid { 
   display: grid; 
-  grid-template-columns: repeat(5, 1fr); 
+  grid-template-columns: repeat(4, 1fr); 
   gap: 18px; 
 }
 
@@ -129,7 +104,7 @@ const foodsCollectedCount = computed(() => foodDex.value.filter(f => f.collected
 }
 
 .dex-icon { 
-  font-size: 32px; 
+  font-size: 52px; 
   margin-bottom: 6px; 
 }
 .dex-name { 
@@ -149,7 +124,7 @@ const foodsCollectedCount = computed(() => foodDex.value.filter(f => f.collected
 }
 
 /* 响应式设计 */
-@media (max-width: 1024px) {
+/*@media (max-width: 1024px) {
   .dual-grid {
     flex-direction: column;
   }
@@ -166,7 +141,5 @@ const foodsCollectedCount = computed(() => foodDex.value.filter(f => f.collected
     margin: 20px auto;
     padding: 0 10px;
   }
-}
+}*/
 </style>
-
-
