@@ -1,3 +1,4 @@
+<!--code/src/views/Explore.vue-->
 <template>
   <div class="page-wrap">
     <div class="page-title">探索</div>
@@ -24,7 +25,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { api } from '@/api/index.js'
+
 const user = ref({ level: 5 })
+
 const locations = ref([
   { id: 1, name: '公园', level: 1, fatigue: 10, icon: '🌳' },
   { id: 2, name: '神秘湖泊', level: 5, fatigue: 15, icon: '💧' },
@@ -33,14 +37,16 @@ const locations = ref([
 
 const lastResult = ref('')
 
-const explore = (loc) => {
-  // 模拟探索结果
-  const rnd = Math.random()
-  if (rnd < 0.5) lastResult.value = `在 ${loc.name} 找到金币  ${Math.floor(Math.random()*50)+10}！`
-  else if (rnd < 0.85) lastResult.value = `在 ${loc.name} 发现了食物！`
-  else lastResult.value = `在 ${loc.name} 遇到了一只宠物（概率示意）！`
+const explore = async (loc) => {
+  const res = await api.explore(loc.id);
+  if (res.code === 0) {
+    lastResult.value = res.data.message
+  } else {
+    alert(res.msg)
+  }
 }
 </script>
+
 
 <style scoped>
 .page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }

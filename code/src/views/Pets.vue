@@ -1,3 +1,4 @@
+<!--code/src/views/Pets.vue-->
 <template>
   <div class="page-wrap">
     <div class="page-title">宠物</div>
@@ -17,26 +18,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { ref, onMounted } from 'vue'
+import { api } from '@/api/index.js'
 
-const pets = ref([
-  { id: 1, name: '小猫', level: 1, rarity: '普通', icon: '🐱', fatigue: 10 },
-  { id: 2, name: '小狗', level: 2, rarity: '普通', icon: '🐶', fatigue: 5 },
-  { id: 3, name: '水灵', level: 5, rarity: '稀有', icon: '🐟', fatigue: 20 },
-])
+const pets = ref([])
 
-const feed = (pet) => {
-  alert(`${pet.name} 被喂食，疲劳减少（示意）`)
-  // 触发后端接口：/api/pet/feed
-}
+onMounted(async () => {
+  const res = await api.getPets()
+  if (res.code === 0) pets.value = res.data
+})
 
-const detail = (pet) => {
-  // 可以跳转到一个宠物详情页（若有）
-  alert(`查看 ${pet.name} 详情（可扩展）`)
+const feed = async (pet) => {
+  const res = await api.feedPet(pet.id)
+  alert(res.data.message)
 }
 </script>
+
 
 <style scoped>
 .page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }

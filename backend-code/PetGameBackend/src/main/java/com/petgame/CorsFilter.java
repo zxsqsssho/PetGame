@@ -10,12 +10,21 @@ import java.io.IOException;
 @WebFilter("/*")
 public class CorsFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
         HttpServletResponse resp = (HttpServletResponse) response;
-        resp.setHeader("Access-Control-Allow-Origin", "*");
+
+        // ★ 必须是你的前端地址，不能用 "*"
+        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+
+        // ★ 必须允许 cookie/session
+        resp.setHeader("Access-Control-Allow-Credentials", "true");
+
         resp.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
         resp.setHeader("Access-Control-Max-Age", "3600");
+
         chain.doFilter(request, response);
     }
 }

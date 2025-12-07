@@ -1,3 +1,4 @@
+// code/src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Pets from '../views/Pets.vue'

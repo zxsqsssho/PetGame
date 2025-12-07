@@ -1,3 +1,4 @@
+<!--code/src/views/Dex.vue-->
 <template>
   <div class="page-wrap">
     <div class="page-title">图鉴</div>
@@ -13,13 +14,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const pokedex = ref([
-  { id:1, name:'小猫', icon:'🐱', collected:true },
-  { id:2, name:'小狗', icon:'🐶', collected:true },
-  { id:3, name:'水灵', icon:'🐟', collected:false },
-])
+import { ref, onMounted } from 'vue'
+import { api } from "@/api/index.js"
+
+const pokedex = ref([])
+
+onMounted(async () => {
+  const res = await api.getDex()
+  if (res.code === 0) {
+    pokedex.value = res.data
+  }
+})
 </script>
+
 
 <style scoped>
 .page-wrap { max-width:1100px; margin:40px auto; padding:0 20px; }

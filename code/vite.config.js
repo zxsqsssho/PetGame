@@ -4,19 +4,31 @@
 // npm install vue@3
 
 // file: `vite.config.js`
+// file: vite.config.js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
 export default defineConfig({
-    plugins: [vue()], // <-- 注册 .vue 处理插件
+    plugins: [vue()],
+
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src')   // ← 加上这个
+        }
+    },
+
     server: {
         proxy: {
-            '/api': {
-                target: 'http://localhost:8080',
+            "/api": {
+                target: "http://localhost:8080/PetGameBackend",
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '/PetGame/api')
+                rewrite: (p) => p.replace(/^\/api/, '/api') // 更稳妥
             }
         }
     }
 })
+
+
+
 

@@ -1,3 +1,4 @@
+<!--code/src/App.vue-->
 <template>
   <div id="app">
     <router-view />
@@ -5,7 +6,10 @@
 </template>
 
 <script setup>
-// 空
+
+import { api } from '@/api/index.js'
+window.api = api
+
 </script>
 
 <style>

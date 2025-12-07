@@ -1,4 +1,9 @@
+<!--code/src/views/Home.vue-->
 <template>
+  <button @click="debugLogin" style="position:fixed;top:10px;left:10px;z-index:9999;">
+    测试登录
+  </button>
+
   <div class="home-page">
 
     <!-- 页面标题 -->
@@ -64,30 +69,54 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from 'vue-router'
+// import { api } from '@/api/index.js'
+
+import { api } from "@/api";
+
+async function debugLogin() {
+  console.log("开始测试登录…");
+
+  try {
+    const loginRes = await api.login("admin", "admin");
+    console.log("LOGIN RESULT:", loginRes);
+
+    const infoRes = await api.getUserInfo();
+    console.log("USER INFO:", infoRes);
+  } catch (e) {
+    console.error("TEST ERROR:", e);
+  }
+}
+
 const router = useRouter()
 
-
 const user = ref({
-  name: "玩家",
-  level: 5,
-  coins: 350,
-  exp: 270,
-  expMax: 400
-});
+  name: "",
+  level: 0,
+  coins: 0,
+  exp: 0,
+  expMax: 400,
+})
 
-const expPercent = computed(() => (user.value.exp / user.value.expMax) * 100);
+onMounted(async () => {
+  const res = await api.getUserInfo()
+  if (res.code === 0) {
+    user.value = res.data
+    user.value.expMax = 400  // 如果你后端有 exp_max 就可以删掉
+  }
+})
 
-// 事件函数（先占位）
+const expPercent = computed(() => (user.value.exp / user.value.expMax) * 100)
+
 const goPets = () => router.push('/pets')
 const goExplore = () => router.push('/explore')
 const goDraw = () => router.push('/draw')
 const goShop = () => router.push('/shop')
 const goTasks = () => router.push('/tasks')
 const goDex = () => router.push('/dex')
-
 </script>
+
 
 <style scoped>
 .home-page {

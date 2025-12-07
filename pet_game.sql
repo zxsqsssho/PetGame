@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 30/11/2025 18:54:49
+ Date: 07/12/2025 17:50:51
 */
 
 SET NAMES utf8mb4;
@@ -213,17 +213,20 @@ CREATE TABLE `shop_items`  (
   `price` int(11) NOT NULL COMMENT '道具价格（金币）',
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '说明',
   `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '道具图标URL',
+  `is_food` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否为食物',
+  `food_power` int(11) NULL DEFAULT 0 COMMENT '恢复疲劳值',
+  `is_universal` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否所有宠物均可吃（高级食物）',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '商店物品表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of shop_items
 -- ----------------------------
-INSERT INTO `shop_items` VALUES (1, '普通食物', 50, '降低宠物疲劳10点', NULL);
-INSERT INTO `shop_items` VALUES (2, '稀有食物', 150, '降低疲劳20点', NULL);
-INSERT INTO `shop_items` VALUES (3, '普通抽奖券', 100, '可进行一次普通抽奖', NULL);
-INSERT INTO `shop_items` VALUES (4, '高级食物', 300, '所有宠物都能吃，恢复更多疲劳', NULL);
-INSERT INTO `shop_items` VALUES (5, '高级抽奖券', 500, '可进行一次高级抽奖', NULL);
+INSERT INTO `shop_items` VALUES (1, '普通食物', 50, '降低宠物疲劳10点', NULL, 0, 0, 0);
+INSERT INTO `shop_items` VALUES (2, '稀有食物', 150, '降低疲劳20点', NULL, 0, 0, 0);
+INSERT INTO `shop_items` VALUES (3, '普通抽奖券', 100, '可进行一次普通抽奖', NULL, 0, 0, 0);
+INSERT INTO `shop_items` VALUES (4, '高级食物', 300, '所有宠物都能吃，恢复更多疲劳', NULL, 0, 0, 0);
+INSERT INTO `shop_items` VALUES (5, '高级抽奖券', 500, '可进行一次高级抽奖', NULL, 0, 0, 0);
 
 -- ----------------------------
 -- Table structure for tasks
@@ -268,7 +271,13 @@ CREATE TABLE `user_items`  (
   INDEX `item_id`(`item_id`) USING BTREE,
   CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `shop_items` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_items
+-- ----------------------------
+INSERT INTO `user_items` VALUES (1, 1, 1, 5);
+INSERT INTO `user_items` VALUES (2, 1, 3, 2);
 
 -- ----------------------------
 -- Table structure for user_pets
@@ -282,12 +291,20 @@ CREATE TABLE `user_pets`  (
   `level` int(11) NULL DEFAULT 1 COMMENT '宠物当前等级',
   `exp` int(11) NULL DEFAULT 0 COMMENT '宠物当前经验',
   `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '获得时间',
+  `fatigue` int(11) NOT NULL DEFAULT 0 COMMENT '当前疲劳值',
+  `fatigue_max` int(11) NOT NULL DEFAULT 10 COMMENT '疲劳上限',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE,
   INDEX `pet_id`(`pet_id`) USING BTREE,
   CONSTRAINT `user_pets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_pets_ibfk_2` FOREIGN KEY (`pet_id`) REFERENCES `pets_base` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_pets
+-- ----------------------------
+INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫咪', 1, 0, '2025-12-06 23:10:45', 0, 10);
+INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗狗', 1, 0, '2025-12-06 23:10:45', 0, 10);
 
 -- ----------------------------
 -- Table structure for user_tasks
@@ -303,7 +320,14 @@ CREATE TABLE `user_tasks`  (
   INDEX `task_id`(`task_id`) USING BTREE,
   CONSTRAINT `user_tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_tasks_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家任务状态表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家任务状态表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_tasks
+-- ----------------------------
+INSERT INTO `user_tasks` VALUES (1, 1, 1, 0);
+INSERT INTO `user_tasks` VALUES (2, 1, 2, 0);
+INSERT INTO `user_tasks` VALUES (3, 1, 3, 0);
 
 -- ----------------------------
 -- Table structure for users
@@ -322,6 +346,11 @@ CREATE TABLE `users`  (
   `update_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '用户信息更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `account`(`account`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表（存储玩家账号、属性等基础资料）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表（存储玩家账号、属性等基础资料）' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 5, 9999, 500, '2025-12-06 23:10:34', '2025-12-06 23:10:34');
 
 SET FOREIGN_KEY_CHECKS = 1;

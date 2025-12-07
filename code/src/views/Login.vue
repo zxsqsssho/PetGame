@@ -1,3 +1,4 @@
+<!--code/src/views/Login.vue-->
 <template>
   <div class="auth-page">
 
@@ -21,24 +22,24 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { api } from '@/api/index.js'
 
 const router = useRouter()
 
-const username = ref('')
-const password = ref('')
+const username = ref("")
+const password = ref("")
 
-const login = () => {
-  if (!username.value || !password.value) return alert("请输入账号和密码")
-
-  // 此处预留后端 API
-  // await axios.post('/login', { username, password })
-
-  alert("登录成功（示意）")
-  router.push('/') // 回主页
+const login = async () => {
+  const res = await api.login(username.value, password.value)
+  if (res.code === 0) {
+    alert("登录成功")
+    router.push('/')
+  } else {
+    alert(res.msg)
+  }
 }
-
-const goRegister = () => router.push('/register')
 </script>
+
 
 <style scoped>
 .auth-page {

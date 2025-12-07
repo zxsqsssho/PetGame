@@ -1,50 +1,54 @@
+<!--code/src/views/Register.vue-->
 <template>
-  <div class="auth-page">
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h2 class="text-3xl font-bold mb-6 text-center">注册</h2>
 
-    <div class="auth-card">
-      <div class="auth-title">注册</div>
+      <form @submit.prevent="register">
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">账号</label>
+          <input v-model="username" type="text" class="w-full p-2 border rounded">
+        </div>
 
-      <input v-model="username" type="text" placeholder="账号" class="auth-input" />
-      <input v-model="password" type="password" placeholder="密码" class="auth-input" />
-      <input v-model="confirm" type="password" placeholder="确认密码" class="auth-input" />
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">密码</label>
+          <input v-model="password" type="password" class="w-full p-2 border rounded">
+        </div>
 
-      <button class="auth-btn" @click="register">注册</button>
+        <button class="w-full p-2 bg-green-500 text-white rounded hover:bg-green-600" type="submit">
+          注册
+        </button>
 
-      <div class="switch-text">
-        已有账号？
-        <span class="link" @click="goLogin">返回登录</span>
-      </div>
+        <p class="mt-4 text-center">
+          已有账号？
+          <router-link to="/login" class="text-blue-500 hover:underline">前往登录</router-link>
+        </p>
+      </form>
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { api } from '@/api/index.js'
 
+const username = ref("")
+const password = ref("")
 const router = useRouter()
 
-const username = ref('')
-const password = ref('')
-const confirm = ref('')
-
-const register = () => {
-  if (!username.value || !password.value || !confirm.value)
-    return alert("请填写所有字段")
-
-  if (password.value !== confirm.value)
-    return alert("两次密码不一致")
-
-  // 预留后端 API
-  // await axios.post('/register', { username, password })
-
-  alert("注册成功（示意）")
-  router.push('/login')
+const register = async () => {
+  const res = await api.register(username.value, password.value)
+  if (res.code === 0) {
+    alert("注册成功")
+    router.push("/login")
+  } else {
+    alert(res.msg)
+  }
 }
-
-const goLogin = () => router.push('/login')
 </script>
+
+
 
 <style scoped>
 .auth-page {
