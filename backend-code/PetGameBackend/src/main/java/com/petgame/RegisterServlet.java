@@ -4,41 +4,44 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.servlet.http.*;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 @WebServlet("/api/user/register")
 public class RegisterServlet extends HttpServlet {
-
     private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = resp.getWriter();
 
-        JsonObject jsonReq = gson.fromJson(new BufferedReader(new InputStreamReader(req.getInputStream())), JsonObject.class);
-        String account = jsonReq.get("username").getAsString();
-        String password = jsonReq.get("password").getAsString();
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(req.getInputStream(), "UTF-8"));
+        JsonObject json = gson.fromJson(reader, JsonObject.class);
+
+        PrintWriter out = resp.getWriter();
+        JsonObject res = new JsonObject();
+
+        if (json == null || !json.has("username") || !json.has("password")) {
+            res.addProperty("code", 400);
+            res.addProperty("msg", "请求体无效");
+            res.add("data", null);
+            out.print(res);
+            return;
+        }
+
+        String account = json.get("username").getAsString();
+        String password = json.get("password").getAsString();
 
         try (Connection conn = DB.getConn()) {
-            // 检查账号是否存在
-            String checkSql = "SELECT id FROM users WHERE account=?";
-            PreparedStatement ps1 = conn.prepareStatement(checkSql);
-            ps1.setString(1, account);
-            ResultSet rs = ps1.executeQuery();
-
-            JsonObject res = new JsonObject();
+            PreparedStatement check = conn.prepareStatement(
+                    "SELECT id FROM users WHERE account=?");
+            check.setString(1, account);
+            ResultSet rs = check.executeQuery();
 
             if (rs.next()) {
                 res.addProperty("code", 3);
@@ -48,24 +51,17 @@ public class RegisterServlet extends HttpServlet {
                 return;
             }
 
-            // 插入用户
-            String insertSql = "INSERT INTO users(account,name,password) VALUES(?,?,?)";
-            PreparedStatement ps2 = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
-            ps2.setString(1, account);
-            ps2.setString(2, account); // 默认昵称
-            ps2.setString(3, password);
-            ps2.executeUpdate();
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO users(account,name,password) VALUES(?,?,?)");
 
-            ResultSet keys = ps2.getGeneratedKeys();
-            int newId = keys.next() ? keys.getInt(1) : 0;
-
-            JsonObject data = new JsonObject();
-            data.addProperty("id", newId);
+            ps.setString(1, account);
+            ps.setString(2, account);
+            ps.setString(3, password);
+            ps.executeUpdate();
 
             res.addProperty("code", 0);
-            res.addProperty("msg", "success");
-            res.add("data", data);
-
+            res.addProperty("msg", "注册成功");
+            res.add("data", null);
             out.print(res);
 
         } catch (Exception e) {
