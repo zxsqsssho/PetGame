@@ -1,3 +1,4 @@
+<!--code/src/views/Draw.vue-->
 <template>
   <div class="page-wrap">
     <div class="page-title">抽奖</div>
@@ -19,22 +20,20 @@
 
 <script setup>
 import { ref } from 'vue'
+import { api } from "@/api/index.js"
+
 const results = ref([])
 
-const drawOnce = () => {
-  // 模拟抽奖
-  const p = Math.random()
-  if (p < 0.7) results.value.unshift('获得：普通宠物')
-  else if (p < 0.95) results.value.unshift('获得：稀有宠物')
-  else results.value.unshift('获得：史诗宠物')
-  // 保持结果不无限长
-  if (results.value.length > 20) results.value.pop()
+const drawOnce = async () => {
+  const res = await api.drawNormal()
+  results.value.unshift("获得：" + JSON.stringify(res.data))
 }
 
 const drawTen = () => {
-  for (let i=0;i<10;i++) drawOnce()
+  for (let i = 0; i < 10; i++) drawOnce()
 }
 </script>
+
 
 <style scoped>
 .page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }

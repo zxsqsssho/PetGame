@@ -1,3 +1,4 @@
+<!--code/src/views/Shop.vue-->
 <template>
   <div class="page-wrap">
     <div class="page-title">商店</div>
@@ -14,17 +15,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const items = ref([
-  { id:1, name:'普通食物', price: 30, icon: '🍗' },
-  { id:2, name:'高级食物', price: 120, icon: '🥩' },
-  { id:3, name:'抽奖券', price: 200, icon: '🎟️' },
-])
+import { ref, onMounted } from 'vue'
+import { api } from '@/api/index.js'
 
-const buy = (item) => {
-  alert(`购买 ${item.name}（仅前端占位）`)
+const items = ref([])
+
+onMounted(async () => {
+  const res = await api.getShopItems()
+  items.value = res.data
+})
+
+const buy = async (item) => {
+  const res = await api.buyItem(item.id, 1)
+  alert(res.msg)
 }
 </script>
+
 
 <style scoped>
 .page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }

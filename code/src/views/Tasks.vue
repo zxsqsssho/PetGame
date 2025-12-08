@@ -1,3 +1,4 @@
+<!--code/src/views/Tasks.vue-->
 <template>
   <div class="page-wrap">
     <div class="page-title">任务</div>
@@ -14,17 +15,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const tasks = ref([
-  { id:1, title:'探索 3 次', desc:'探索任意地点 3 次', progress:0, target:3, reward:'金币 50' },
-  { id:2, title:'喂食 1 次', desc:'喂任意宠物 1 次', progress:1, target:1, reward:'经验 30' },
-])
+import { ref, onMounted } from 'vue'
+import { api } from '@/api/index.js'
 
-const claim = (t) => {
-  alert(`领取奖励：${t.reward}（前端占位）`)
-  t.progress = 0 // 示意已领取
+const tasks = ref([])
+
+onMounted(async () => {
+  const res = await api.getTasks()
+  tasks.value = res.data
+})
+
+const claim = async (t) => {
+  const res = await api.claimTask(t.id)
+  if (res.code === 0) {
+    alert(`奖励：金币 ${res.data.coinsGained}, 经验 ${res.data.expGained}`)
+  }
 }
 </script>
+
 
 <style scoped>
 .page-wrap { max-width:1100px; margin:40px auto; padding:0 20px; }
