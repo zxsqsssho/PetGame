@@ -123,23 +123,4 @@ const foodsCollectedCount = computed(() => store.foodsCollectedCount)
   margin-top: 2px;
 }
 
-/* 响应式设计 */
-/*@media (max-width: 1024px) {
-  .dual-grid {
-    flex-direction: column;
-  }
-  .grid { 
-    grid-template-columns: repeat(4, 1fr); 
-  }
-}
-
-@media (max-width: 768px) {
-  .grid { 
-    grid-template-columns: repeat(3, 1fr); 
-  }
-  .page-wrap {
-    margin: 20px auto;
-    padding: 0 10px;
-  }
-}*/
 </style>

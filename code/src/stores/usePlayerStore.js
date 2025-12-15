@@ -46,9 +46,9 @@ export const usePlayerStore = defineStore('player', {
     level: 5,
     gold: 350,
     pets: [
-      { id: 1, name: '小猫', level: 1, rarity: '普通', icon: '🐱', fatigue: 10, preferredFood: 'fish' },
-      { id: 2, name: '小狗', level: 2, rarity: '普通', icon: '🐶', fatigue: 5, preferredFood: 'bone' },
-      { id: 3, name: '锦鲤', level: 5, rarity: '稀有', icon: '🐟', fatigue: 20, preferredFood: 'fish_food' }
+      { id: 1, name: '小猫', rarity: '普通', icon: '🐱', fatigue: 10, preferredFood: 'fish' },
+      { id: 2, name: '小狗', rarity: '普通', icon: '🐶', fatigue: 5, preferredFood: 'bone' },
+      { id: 3, name: '锦鲤', rarity: '稀有', icon: '🐟', fatigue: 20, preferredFood: 'fish_food' }
     ],
     carriedPetId: null, // 携带的宠物 ID
     nextPetId: 4,       // 用于生成唯一 ID
@@ -214,7 +214,6 @@ export const usePlayerStore = defineStore('player', {
             icon: template.icon,
             rarity: location.rarity,
             preferredFood: template.preferredFood,
-            level: 1,
             fatigue: 0
           }
           this.pets.push(newPet)

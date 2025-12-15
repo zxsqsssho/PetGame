@@ -14,7 +14,7 @@
       <div v-for="loc in locations" :key="loc.id" class="loc-card">
         <div class="loc-icon">{{ loc.icon }}</div>
         <div class="loc-name">{{ loc.name }}</div>
-        <div class="loc-meta">等级要求: Lv.{{ loc.level }} · 疲劳 +{{ loc.fatigue }}</div>
+        <div class="loc-meta">疲劳 +{{ loc.fatigue }}</div>
         <div class="loc-actions">
           <button
             :disabled="!canExplore(loc)"
@@ -40,22 +40,19 @@ import { usePlayerStore } from '@/stores/usePlayerStore'
 const store = usePlayerStore()
 
 const locations = [
-  { id: 1, name: '公园', level: 1, fatigue: 5, icon: '🌳', rarity: '普通' },
-  { id: 2, name: '神秘湖泊', level: 5, fatigue: 10, icon: '💧', rarity: '稀有' },
-  { id: 3, name: '遗迹', level: 10, fatigue: 15, icon: '🏛️', rarity: '史诗' }
+  { id: 1, name: '公园', fatigue: 5, icon: '🌳', rarity: '普通' },
+  { id: 2, name: '神秘湖泊', fatigue: 10, icon: '💧', rarity: '稀有' },
+  { id: 3, name: '遗迹', fatigue: 15, icon: '🏛️', rarity: '史诗' }
 ]
 
 const lastResult = ref('')
 
 function canExplore(loc) {
-  return store.level >= loc.level && (
-    !store.carriedPet ||
+  return !store.carriedPet ||
     (store.carriedPet.fatigue + loc.fatigue <= store.maxFatigue(store.carriedPet.rarity))
-  )
 }
 
 function getExploreButtonText(loc) {
-  if (store.level < loc.level) return '等级不足'
   if (store.carriedPet) {
     const max = store.maxFatigue(store.carriedPet.rarity)
     const future = store.carriedPet.fatigue + loc.fatigue
