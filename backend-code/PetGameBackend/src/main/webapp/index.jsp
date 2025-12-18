@@ -1,5 +1,5 @@
 <html>
 <body>
-<h2>Hello World!</h2>
+<h2>The backend has been opened!</h2>
 </body>
 </html>
