@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 18/12/2025 19:40:13
+ Date: 19/12/2025 00:27:33
 */
 
 SET NAMES utf8mb4;
@@ -206,13 +206,16 @@ CREATE TABLE `user_items`  (
   INDEX `item_id`(`item_id`) USING BTREE,
   CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `shop_items` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_items
 -- ----------------------------
-INSERT INTO `user_items` VALUES (1, 1, 1, 5);
+INSERT INTO `user_items` VALUES (1, 1, 1, 8);
 INSERT INTO `user_items` VALUES (2, 1, 3, 2);
+INSERT INTO `user_items` VALUES (3, 1, 2, 2);
+INSERT INTO `user_items` VALUES (4, 1, 5, 2);
+INSERT INTO `user_items` VALUES (5, 1, 4, 1);
 
 -- ----------------------------
 -- Table structure for user_pets
@@ -224,7 +227,6 @@ CREATE TABLE `user_pets`  (
   `pet_id` int(11) NOT NULL COMMENT '对应宠物图鉴ID（pets_base）',
   `nickname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '玩家给宠物的昵称',
   `level` int(11) NULL DEFAULT 1 COMMENT '宠物当前等级',
-  `exp` int(11) NULL DEFAULT 0 COMMENT '宠物当前经验',
   `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '获得时间',
   `fatigue` int(11) NOT NULL DEFAULT 0 COMMENT '当前疲劳值',
   `fatigue_max` int(11) NOT NULL DEFAULT 10 COMMENT '疲劳上限',
@@ -234,13 +236,14 @@ CREATE TABLE `user_pets`  (
   INDEX `pet_id`(`pet_id`) USING BTREE,
   CONSTRAINT `user_pets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_pets_ibfk_2` FOREIGN KEY (`pet_id`) REFERENCES `pets_base` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_pets
 -- ----------------------------
-INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫咪', 1, 0, '2025-12-06 23:10:45', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗狗', 1, 0, '2025-12-06 23:10:45', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫咪', 1, '2025-12-06 23:10:45', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗狗', 1, '2025-12-06 23:10:45', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (3, 1, 6, NULL, 1, '2025-12-18 23:14:37', 0, 10, 0);
 
 -- ----------------------------
 -- Table structure for users
@@ -257,11 +260,11 @@ CREATE TABLE `users`  (
   `update_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '用户信息更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `account`(`account`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表（存储玩家账号、属性等基础资料）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表（存储玩家账号、属性等基础资料）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 9999, '2025-12-06 23:10:34', '2025-12-06 23:10:34');
+INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 9283, '2025-12-06 23:10:34', '2025-12-18 23:14:37');
 
 SET FOREIGN_KEY_CHECKS = 1;

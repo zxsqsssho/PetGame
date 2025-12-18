@@ -11,8 +11,10 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 
 const routes = [
-    { path: '/', name: 'Home', component: Home },
+    //默认跳转页面是注册
+    { path: '/', redirect: '/login' },
 
+    { path: '/home', name: 'Home', component: Home },
     { path: '/login', component: Login },
     { path: '/register', component: Register },
 

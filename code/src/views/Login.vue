@@ -32,11 +32,19 @@ const password = ref("")
 const login = async () => {
   const res = await api.login(username.value, password.value)
   if (res.code === 0) {
+    // 把接口返回的用户名存到本地存储
+    localStorage.setItem('username', res.data.username)
     alert("登录成功")
-    router.push('/')
+    //登录成功后跳转到主页
+    router.push('/home')
   } else {
     alert(res.msg)
   }
+}
+
+// 补充goRegister函数（实现注册页跳转）
+const goRegister = () => {
+  router.push('/register')
 }
 </script>
 

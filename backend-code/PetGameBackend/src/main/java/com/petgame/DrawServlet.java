@@ -102,8 +102,15 @@ public class DrawServlet extends HttpServlet {
             res.addProperty("msg", "success");
             res.add("data", data);
             out.print(gson.toJson(res));
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+
+            JsonObject err = new JsonObject();
+            err.addProperty("code", 500);
+            err.addProperty("msg", "服务器异常: " + e.getMessage());
+            err.add("data", null);
+
+            out.print(err);
         }
     }
 }

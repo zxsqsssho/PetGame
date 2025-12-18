@@ -1,9 +1,5 @@
 <!--code/src/views/Home.vue-->
 <template>
-  <button @click="debugLogin" style="position:fixed;top:10px;left:10px;z-index:9999;">
-    测试登录
-  </button>
-
   <div class="home-page">
 
     <!-- 页面标题 -->
@@ -16,17 +12,11 @@
 
         <div class="user-info">
           <div class="user-name">{{ user.name }}</div>
-          <div class="user-level">等级 Lv.{{ user.level }}</div>
         </div>
       </div>
 
       <div class="user-right">
         <div class="coins">🪙 {{ user.coins }}</div>
-
-        <div class="exp-bar">
-          <div class="exp-fill" :style="{ width: expPercent + '%' }"></div>
-        </div>
-        <div class="exp-text">{{ user.exp }} / {{ user.expMax }}</div>
       </div>
     </div>
 
@@ -69,45 +59,46 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from 'vue-router'
-// import { api } from '@/api/index.js'
-
-import { api } from "@/api";
-
-async function debugLogin() {
-  console.log("开始测试登录…");
-
-  try {
-    const loginRes = await api.login("admin", "admin");
-    console.log("LOGIN RESULT:", loginRes);
-
-    const infoRes = await api.getUserInfo();
-    console.log("USER INFO:", infoRes);
-  } catch (e) {
-    console.error("TEST ERROR:", e);
-  }
-}
+import { api } from '@/api/index.js'
 
 const router = useRouter()
 
 const user = ref({
   name: "",
-  level: 0,
   coins: 0,
-  exp: 0,
-  expMax: 400,
 })
 
+// onMounted(async () => {
+//   const res = await api.getUserInfo()
+//
+//   if (res.code === 0) {
+//     user.value = res.data
+//   }
+// })
+
 onMounted(async () => {
-  const res = await api.getUserInfo()
-  if (res.code === 0) {
-    user.value = res.data
-    user.value.expMax = 400  // 如果你后端有 exp_max 就可以删掉
+  try {
+    const res = await api.getUserInfo()
+    console.log("user info =", res)
+
+    if (res && res.code === 0) {
+      user.value = res.data
+    } else {
+      alert(res?.msg || "登录状态异常，请重新登录")
+      router.push('/login')
+    }
+  } catch (e) {
+    console.error("getUserInfo error", e)
+    alert("服务器异常，请重新登录")
+    router.push('/login')
   }
 })
 
-const expPercent = computed(() => (user.value.exp / user.value.expMax) * 100)
+
+
+
 
 const goPets = () => router.push('/pets')
 const goExplore = () => router.push('/explore')
@@ -163,11 +154,6 @@ const goDex = () => router.push('/dex')
   font-weight: bold;
 }
 
-.user-level {
-  font-size: 14px;
-  color: #666;
-}
-
 /* 金币 + 经验 */
 .user-right {
   text-align: right;
@@ -179,24 +165,6 @@ const goDex = () => router.push('/dex')
   margin-bottom: 8px;
 }
 
-.exp-bar {
-  width: 180px;
-  height: 10px;
-  background: #ddd;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-
-.exp-fill {
-  height: 100%;
-  background: #80d468;
-}
-
-.exp-text {
-  font-size: 14px;
-  color: #555;
-}
 
 /* 六宫格菜单 */
 .menu-grid {

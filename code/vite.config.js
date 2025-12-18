@@ -21,9 +21,8 @@ export default defineConfig({
     server: {
         proxy: {
             "/api": {
-                target: "http://localhost:8080/PetGameBackend",
-                changeOrigin: true,
-                rewrite: (p) => p.replace(/^\/api/, '/api') // 更稳妥
+                target: "http://localhost:8080",
+                changeOrigin: true
             }
         }
     }

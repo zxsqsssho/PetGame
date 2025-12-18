@@ -49,9 +49,7 @@ public class UserInfoServlet extends HttpServlet {
                 data.addProperty("account", rs.getString("account"));
                 data.addProperty("name", rs.getString("name"));
                 data.addProperty("avatar", rs.getString("avatar"));
-                data.addProperty("level", rs.getInt("level"));
                 data.addProperty("coins", rs.getInt("coins"));
-                data.addProperty("exp", rs.getInt("exp"));
 
                 res.addProperty("code", 0);
                 res.addProperty("msg", "success");
@@ -62,6 +60,13 @@ public class UserInfoServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            JsonObject err = new JsonObject();
+            err.addProperty("code", 500);
+            err.addProperty("msg", "服务器异常: " + e.getMessage());
+            err.add("data", null);
+
+            out.print(err);
         }
     }
 }

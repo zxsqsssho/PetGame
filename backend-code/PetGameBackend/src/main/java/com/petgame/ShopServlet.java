@@ -49,9 +49,17 @@ public class ShopServlet extends HttpServlet {
             res.addProperty("msg", "success");
             res.add("data", arr);
             out.print(gson.toJson(res));
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+
+            JsonObject err = new JsonObject();
+            err.addProperty("code", 500);
+            err.addProperty("msg", "服务器异常: " + e.getMessage());
+            err.add("data", null);
+
+            out.print(err);
         }
+
     }
 
     @Override
@@ -130,8 +138,16 @@ public class ShopServlet extends HttpServlet {
             data.addProperty("remainingCoins", coins - price);
             res.add("data", data);
             out.print(gson.toJson(res));
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+
+            JsonObject err = new JsonObject();
+            err.addProperty("code", 500);
+            err.addProperty("msg", "服务器异常: " + e.getMessage());
+            err.add("data", null);
+
+            out.print(err);
         }
+
     }
 }

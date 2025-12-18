@@ -1,3 +1,4 @@
+//src/main/java/com/petgame/LoginServlet.java
 package com.petgame;
 
 import com.google.gson.Gson;
@@ -80,7 +81,7 @@ public class LoginServlet extends HttpServlet {
         // ---------------------------
         try (Connection conn = DB.getConn()) {
 
-            String sql = "SELECT id,name,password,avatar,level,coins,exp FROM users WHERE account=?";
+            String sql = "SELECT id,name,password,avatar,coins FROM users WHERE account=?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, account);
             ResultSet rs = ps.executeQuery();
@@ -117,9 +118,7 @@ public class LoginServlet extends HttpServlet {
             data.addProperty("account", account);
             data.addProperty("name", rs.getString("name"));
             data.addProperty("avatar", rs.getString("avatar"));
-            data.addProperty("level", rs.getInt("level"));
             data.addProperty("coins", rs.getInt("coins"));
-            data.addProperty("exp", rs.getInt("exp"));
 
             res.addProperty("code", 0);
             res.addProperty("msg", "success");
@@ -128,7 +127,15 @@ public class LoginServlet extends HttpServlet {
             out.print(res);
 
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+        e.printStackTrace();
+
+        JsonObject err = new JsonObject();
+        err.addProperty("code", 500);
+        err.addProperty("msg", "服务器异常：" + e.getMessage());
+        err.add("data", null);
+
+        out.print(err);
     }
+
+}
 }
