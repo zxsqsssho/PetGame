@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 07/12/2025 17:50:51
+ Date: 18/12/2025 19:40:13
 */
 
 SET NAMES utf8mb4;
@@ -117,47 +117,12 @@ INSERT INTO `gacha_pool` VALUES (19, 14, 8);
 INSERT INTO `gacha_pool` VALUES (20, 15, 8);
 
 -- ----------------------------
--- Table structure for levels
--- ----------------------------
-DROP TABLE IF EXISTS `levels`;
-CREATE TABLE `levels`  (
-  `level` int(11) NOT NULL COMMENT '等级',
-  `exp_required` int(11) NOT NULL COMMENT '升级到下一级所需经验',
-  PRIMARY KEY (`level`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家升级经验配置表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of levels
--- ----------------------------
-INSERT INTO `levels` VALUES (1, 0);
-INSERT INTO `levels` VALUES (2, 100);
-INSERT INTO `levels` VALUES (3, 250);
-INSERT INTO `levels` VALUES (4, 450);
-INSERT INTO `levels` VALUES (5, 700);
-INSERT INTO `levels` VALUES (6, 1000);
-INSERT INTO `levels` VALUES (7, 1400);
-INSERT INTO `levels` VALUES (8, 1850);
-INSERT INTO `levels` VALUES (9, 2350);
-INSERT INTO `levels` VALUES (10, 2900);
-INSERT INTO `levels` VALUES (11, 3500);
-INSERT INTO `levels` VALUES (12, 4150);
-INSERT INTO `levels` VALUES (13, 4850);
-INSERT INTO `levels` VALUES (14, 5600);
-INSERT INTO `levels` VALUES (15, 6400);
-INSERT INTO `levels` VALUES (16, 7250);
-INSERT INTO `levels` VALUES (17, 8150);
-INSERT INTO `levels` VALUES (18, 9100);
-INSERT INTO `levels` VALUES (19, 10100);
-INSERT INTO `levels` VALUES (20, 11200);
-
--- ----------------------------
 -- Table structure for locations
 -- ----------------------------
 DROP TABLE IF EXISTS `locations`;
 CREATE TABLE `locations`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '地点ID',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '地点名称',
-  `min_level` int(11) NULL DEFAULT 1 COMMENT '进入地点需要的最低玩家等级',
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '地点介绍',
   `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图标URL',
   PRIMARY KEY (`id`) USING BTREE
@@ -166,9 +131,9 @@ CREATE TABLE `locations`  (
 -- ----------------------------
 -- Records of locations
 -- ----------------------------
-INSERT INTO `locations` VALUES (1, '公园', 1, '适合新手的休闲场所，可获得普通宠物与基础奖励', NULL);
-INSERT INTO `locations` VALUES (2, '神秘湖泊', 5, '宁静又危险的湖区，可以钓上稀有生物', NULL);
-INSERT INTO `locations` VALUES (3, '遗迹', 10, '充满未知能量的古老遗迹，可挑战强力怪物', NULL);
+INSERT INTO `locations` VALUES (1, '公园', '适合新手的休闲场所，可获得普通宠物与基础奖励', NULL);
+INSERT INTO `locations` VALUES (2, '神秘湖泊', '宁静又危险的湖区，可以钓上稀有生物', NULL);
+INSERT INTO `locations` VALUES (3, '遗迹', '充满未知能量的古老遗迹，可挑战强力怪物', NULL);
 
 -- ----------------------------
 -- Table structure for pets_base
@@ -180,28 +145,27 @@ CREATE TABLE `pets_base`  (
   `rarity` int(11) NOT NULL COMMENT '稀有度（1-5）',
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '宠物描述',
   `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '宠物图标URL',
-  `obtain_level` int(11) NULL DEFAULT 1 COMMENT '可获得的最低玩家等级',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '宠物图鉴表（系统定义的全部宠物信息）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pets_base
 -- ----------------------------
-INSERT INTO `pets_base` VALUES (1, '家猫', 1, '温顺的猫咪，适合陪伴新手训练师', NULL, 1);
-INSERT INTO `pets_base` VALUES (2, '小狗', 1, '活泼可爱的小狗，喜欢跑来跑去', NULL, 1);
-INSERT INTO `pets_base` VALUES (3, '麻雀', 1, '随处可见的小鸟，但精力充沛', NULL, 1);
-INSERT INTO `pets_base` VALUES (4, '乌龟', 1, '行动缓慢但很可靠', NULL, 1);
-INSERT INTO `pets_base` VALUES (5, '白兔', 1, '机灵的小兔子，经常四处乱跳', NULL, 1);
-INSERT INTO `pets_base` VALUES (6, '蓝鳍鱼', 2, '闪亮鳍片的蓝色小鱼', NULL, 5);
-INSERT INTO `pets_base` VALUES (7, '电鳗', 2, '身体带电的奇怪生物', NULL, 5);
-INSERT INTO `pets_base` VALUES (8, '水晶鲤', 2, '据说能带来好运的稀有鱼类', NULL, 5);
-INSERT INTO `pets_base` VALUES (9, '深湖妖鱼', 2, '湖泊深处出现的神秘生物', NULL, 5);
-INSERT INTO `pets_base` VALUES (10, '水母精灵', 2, '拥有发光触手的灵性水母', NULL, 5);
-INSERT INTO `pets_base` VALUES (11, '石像守卫', 3, '古代遗迹的守门者，体型巨大', NULL, 10);
-INSERT INTO `pets_base` VALUES (12, '遗迹灵魂', 3, '遗迹中残存的能量实体', NULL, 10);
-INSERT INTO `pets_base` VALUES (13, '石羽巨鸟', 3, '传说中俯瞰遗迹的巨鸟', NULL, 10);
-INSERT INTO `pets_base` VALUES (14, '黄金魔像', 3, '由宝石与金属构成的古代造物', NULL, 10);
-INSERT INTO `pets_base` VALUES (15, '遗迹之王', 3, '掌握古代能量的神秘王者', NULL, 10);
+INSERT INTO `pets_base` VALUES (1, '家猫', 1, '温顺的猫咪，适合陪伴新手训练师', NULL);
+INSERT INTO `pets_base` VALUES (2, '小狗', 1, '活泼可爱的小狗，喜欢跑来跑去', NULL);
+INSERT INTO `pets_base` VALUES (3, '麻雀', 1, '随处可见的小鸟，但精力充沛', NULL);
+INSERT INTO `pets_base` VALUES (4, '乌龟', 1, '行动缓慢但很可靠', NULL);
+INSERT INTO `pets_base` VALUES (5, '白兔', 1, '机灵的小兔子，经常四处乱跳', NULL);
+INSERT INTO `pets_base` VALUES (6, '蓝鳍鱼', 2, '闪亮鳍片的蓝色小鱼', NULL);
+INSERT INTO `pets_base` VALUES (7, '电鳗', 2, '身体带电的奇怪生物', NULL);
+INSERT INTO `pets_base` VALUES (8, '水晶鲤', 2, '据说能带来好运的稀有鱼类', NULL);
+INSERT INTO `pets_base` VALUES (9, '深湖妖鱼', 2, '湖泊深处出现的神秘生物', NULL);
+INSERT INTO `pets_base` VALUES (10, '水母精灵', 2, '拥有发光触手的灵性水母', NULL);
+INSERT INTO `pets_base` VALUES (11, '石像守卫', 3, '古代遗迹的守门者，体型巨大', NULL);
+INSERT INTO `pets_base` VALUES (12, '遗迹灵魂', 3, '遗迹中残存的能量实体', NULL);
+INSERT INTO `pets_base` VALUES (13, '石羽巨鸟', 3, '传说中俯瞰遗迹的巨鸟', NULL);
+INSERT INTO `pets_base` VALUES (14, '黄金魔像', 3, '由宝石与金属构成的古代造物', NULL);
+INSERT INTO `pets_base` VALUES (15, '遗迹之王', 3, '掌握古代能量的神秘王者', NULL);
 
 -- ----------------------------
 -- Table structure for shop_items
@@ -227,35 +191,6 @@ INSERT INTO `shop_items` VALUES (2, '稀有食物', 150, '降低疲劳20点', NU
 INSERT INTO `shop_items` VALUES (3, '普通抽奖券', 100, '可进行一次普通抽奖', NULL, 0, 0, 0);
 INSERT INTO `shop_items` VALUES (4, '高级食物', 300, '所有宠物都能吃，恢复更多疲劳', NULL, 0, 0, 0);
 INSERT INTO `shop_items` VALUES (5, '高级抽奖券', 500, '可进行一次高级抽奖', NULL, 0, 0, 0);
-
--- ----------------------------
--- Table structure for tasks
--- ----------------------------
-DROP TABLE IF EXISTS `tasks`;
-CREATE TABLE `tasks`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '任务ID',
-  `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '任务标题',
-  `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '任务说明',
-  `reward_coins` int(11) NULL DEFAULT 0 COMMENT '奖励金币',
-  `reward_exp` int(11) NULL DEFAULT 0 COMMENT '奖励经验',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '任务列表（系统预设任务）' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tasks
--- ----------------------------
-INSERT INTO `tasks` VALUES (1, '探索任意地点3次', '完成3次探索任务', 100, 50);
-INSERT INTO `tasks` VALUES (2, '喂食宠物一次', '给你的宠物喂一次食物', 50, 30);
-INSERT INTO `tasks` VALUES (3, '进行1次抽奖', '参与一次抽奖活动', 80, 40);
-INSERT INTO `tasks` VALUES (4, '收集5种宠物', '收集满5种不同的宠物', 150, 100);
-INSERT INTO `tasks` VALUES (5, '收集10种宠物', '收集满10种不同的宠物', 200, 150);
-INSERT INTO `tasks` VALUES (6, '收集15种宠物', '集齐全部宠物图鉴', 500, 300);
-INSERT INTO `tasks` VALUES (7, '首次探索公园', '第一次探索公园地点', 50, 20);
-INSERT INTO `tasks` VALUES (8, '首次探索神秘湖泊', '第一次探索神秘湖泊地点', 100, 40);
-INSERT INTO `tasks` VALUES (9, '首次探索遗迹', '第一次探索遗迹地点', 200, 80);
-INSERT INTO `tasks` VALUES (10, '获得一只普通宠物', '首次获取普通稀有度宠物', 50, 20);
-INSERT INTO `tasks` VALUES (11, '获得一只稀有宠物', '首次获取稀有稀有度宠物', 150, 60);
-INSERT INTO `tasks` VALUES (12, '获得一只史诗宠物', '首次获取史诗稀有度宠物', 300, 120);
 
 -- ----------------------------
 -- Table structure for user_items
@@ -293,6 +228,7 @@ CREATE TABLE `user_pets`  (
   `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '获得时间',
   `fatigue` int(11) NOT NULL DEFAULT 0 COMMENT '当前疲劳值',
   `fatigue_max` int(11) NOT NULL DEFAULT 10 COMMENT '疲劳上限',
+  `is_active` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否当前携带（1=携带中）',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE,
   INDEX `pet_id`(`pet_id`) USING BTREE,
@@ -303,31 +239,8 @@ CREATE TABLE `user_pets`  (
 -- ----------------------------
 -- Records of user_pets
 -- ----------------------------
-INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫咪', 1, 0, '2025-12-06 23:10:45', 0, 10);
-INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗狗', 1, 0, '2025-12-06 23:10:45', 0, 10);
-
--- ----------------------------
--- Table structure for user_tasks
--- ----------------------------
-DROP TABLE IF EXISTS `user_tasks`;
-CREATE TABLE `user_tasks`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户任务ID',
-  `user_id` int(11) NULL DEFAULT NULL COMMENT '玩家ID',
-  `task_id` int(11) NULL DEFAULT NULL COMMENT '任务ID',
-  `status` int(11) NULL DEFAULT 0 COMMENT '0未完成 1完成',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `user_id`(`user_id`) USING BTREE,
-  INDEX `task_id`(`task_id`) USING BTREE,
-  CONSTRAINT `user_tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `user_tasks_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家任务状态表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of user_tasks
--- ----------------------------
-INSERT INTO `user_tasks` VALUES (1, 1, 1, 0);
-INSERT INTO `user_tasks` VALUES (2, 1, 2, 0);
-INSERT INTO `user_tasks` VALUES (3, 1, 3, 0);
+INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫咪', 1, 0, '2025-12-06 23:10:45', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗狗', 1, 0, '2025-12-06 23:10:45', 0, 10, 0);
 
 -- ----------------------------
 -- Table structure for users
@@ -339,9 +252,7 @@ CREATE TABLE `users`  (
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '玩家昵称',
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '登录密码（建议加密）',
   `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '头像URL',
-  `level` int(11) NULL DEFAULT 1 COMMENT '玩家等级',
   `coins` int(11) NULL DEFAULT 0 COMMENT '玩家持有金币',
-  `exp` int(11) NULL DEFAULT 0 COMMENT '玩家当前经验',
   `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `update_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '用户信息更新时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -351,6 +262,6 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 5, 9999, 500, '2025-12-06 23:10:34', '2025-12-06 23:10:34');
+INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 9999, '2025-12-06 23:10:34', '2025-12-06 23:10:34');
 
 SET FOREIGN_KEY_CHECKS = 1;
