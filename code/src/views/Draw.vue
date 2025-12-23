@@ -1,5 +1,7 @@
 <!--code/src/views/Draw.vue-->
 <template>
+  <!-- 使用用户信息卡片组件 -->
+  <UserInfoCard />
   <div class="page-wrap">
     <div class="page-title">抽奖</div>
 
@@ -59,6 +61,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { api } from '@/api'
+import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const results = ref([])
 
@@ -115,10 +118,13 @@ const drawTen = async (type) => {
 </script>
 
 <style scoped>
+
+
 .page-wrap {
   max-width: 1100px;
   margin: 40px auto;
   padding: 0 20px;
+  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */
 }
 
 .page-title {
