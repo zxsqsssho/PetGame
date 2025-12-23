@@ -73,7 +73,12 @@ const buy = async (item) => {
 
     // ⭐ 通知用户信息卡片刷新金币
     window.dispatchEvent(new Event('refresh-user-info'))
-
+    // 1. 添加对UserInfoCard组件的引用
+    const userInfoRef = ref(null)
+    // 刷新用户信息栏的金币数量
+    if (userInfoRef.value && userInfoRef.value.refreshUserInfo) {
+      await userInfoRef.value.refreshUserInfo()
+    }
   } catch (e) {
     console.error(e)
     alert('金币不足或购买失败')
