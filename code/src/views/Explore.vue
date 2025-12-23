@@ -1,5 +1,7 @@
 <!-- Explore.vue -->
 <template>
+  <!-- 使用用户信息卡片组件 -->
+  <UserInfoCard />
   <div class="page-wrap">
     <div class="page-title">探索</div>
     <div class="locations">
@@ -23,6 +25,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@/api/index.js'
+import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const locations = ref([])
 const lastResult = ref('')
@@ -57,7 +60,7 @@ const startExplore = async (loc) => {
 </script>
 
 <style scoped>
-.page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px;  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */padding: 20px;}
 .page-title { font-size: 28px; font-weight: 700; margin-bottom: 18px; }
 .locations { display: flex; gap: 20px; flex-wrap: wrap; }
 .loc-card {

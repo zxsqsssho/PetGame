@@ -1,5 +1,7 @@
 <!-- Dex.vue -->
 <template>
+  <!-- 使用用户信息卡片组件 -->
+  <UserInfoCard />
   <div class="page-wrap">
     <div class="page-title">宠物图鉴</div>
     <div class="dex-section">
@@ -20,8 +22,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { api } from '@/api/index.js'
+import { ref, onMounted } from 'vue'
+import { api } from "@/api/index.js"
+import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const pokedex = ref([])
 const totalPetsCount = ref(0)
@@ -55,6 +58,13 @@ const getRarityName = (rarity) => {
 </script>
 
 <style scoped>
+.page-wrap { max-width:1100px; margin:40px auto; padding:0 20px;  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */padding: 20px;}
+.page-title { font-size:28px; font-weight:700; margin-bottom:18px; }
+.grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:18px; }
+.dex-card { background:#fff; padding:12px; border-radius:10px; text-align:center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
+.dex-icon { font-size:36px; margin-bottom:8px; }
+.dex-name { font-weight:700; }
+.locked { color:#bbb; margin-top:6px; }
 .page-wrap {
   max-width: 1000px;
   margin: 40px auto;

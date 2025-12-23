@@ -1,4 +1,4 @@
-// code/src/api/index.js - 更新API函数
+// code/src/api/index.js
 import axios from "axios";
 
 // 让 axios 自动携带 Cookie（用于 Session 登录）
@@ -17,11 +17,9 @@ export const api = {
         instance.post("/explore", { locationId }).then(r => r.data),
     getExploreLocations: () => instance.get("/explore/locations").then(r => r.data),
     // 抽奖
-    drawNormal: () =>
-        instance.post("/draw/normal").then(r => r.data),
+    gachaDraw: (data) =>
+        instance.post("/gacha/draw", data).then(r => r.data),
 
-    drawAdvanced: () =>
-        instance.post("/draw/advanced").then(r => r.data),
 
     // 图鉴
     getDexPets: () => instance.get("/dex/pets").then(r => r.data),
@@ -38,13 +36,26 @@ export const api = {
     buyItem: (itemId, quantity = 1) =>
         instance.post("/shop/buy", { itemId, quantity }).then(r => r.data),
 
+    // 任务
+    getTasks: () =>
+        instance.get("/tasks/list").then(r => r.data),
+
+    claimTask: (taskId) =>
+        instance.post("/tasks/claim", { taskId }).then(r => r.data),
+
     // 用户系统
     login: (username, password) =>
         instance.post("/user/login", { username, password }).then(r => r.data),
 
-    register: (username, name, password, avatar) =>
-        instance.post("/user/register", { username, name, password, avatar }).then(r => r.data),
+    register: (username, password) =>
+        instance.post("/user/register", { username, password }).then(r => r.data),
 
     getUserInfo: () =>
         instance.get("/user/info").then(r => r.data),
+    //背包
+    getBags:()=>
+        instance.get("/items/list").then(r=>r.data),
+
+    saleItem:(itemId,saleAmount)=>
+        instance.post("/items/sale",{itemId,saleAmount}).then(r=>r.data),
 };
