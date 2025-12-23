@@ -4,45 +4,265 @@
     <div class="page-title">抽奖</div>
 
     <div class="draw-panel">
-      <div class="pool-card">
-        <div class="pool-title">普通抽奖（100 金币）</div>
-        <div class="pool-info">可能获得：普通宠物 / 稀有宠物 / 食物 / 金币</div>
-        <button @click="drawOnce">抽 一 次</button>
-        <button @click="drawTen">抽 十 次</button>
+
+      <!-- 左侧抽奖区 -->
+      <div class="gacha-panel">
+        <!-- 普通抽奖 -->
+        <div class="pool-card">
+          <div class="pool-title">普通抽奖</div>
+          <div class="pool-cost">100 金币</div>
+          <div class="pool-desc">
+            普通 / 稀有宠物 · 食物 · 金币
+          </div>
+
+          <button @click="drawOne('normal')">抽 一 次</button>
+          <button @click="drawTen('normal')">十 连 抽</button>
+        </div>
+
+        <!-- 高级抽奖 -->
+        <div class="pool-card advanced">
+          <div class="pool-title">高级抽奖</div>
+          <div class="pool-cost">500 金币</div>
+          <div class="pool-desc">
+            稀有 / 史诗宠物 · 高级食物 · 金币
+          </div>
+
+          <button @click="drawOne('advanced')">抽 一 次</button>
+          <button @click="drawTen('advanced')">十 连 抽</button>
+
+        </div>
       </div>
 
-      <div v-if="results.length" class="result-list">
-        <div v-for="(r,i) in results" :key="i" class="result-item">{{ r }}</div>
+      <!-- 抽奖结果 -->
+      <div class="result-list">
+        <div class="result-title">抽奖结果</div>
+
+        <div class="result-hint" v-if="results.length === 0">
+          还没有抽奖记录
+        </div>
+
+        <div
+            v-for="(r, i) in results"
+            :key="i"
+            class="result-item"
+            :class="r.rarity"
+        >
+          🎉 {{ r.text }}
+        </div>
       </div>
+
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { api } from "@/api/index.js"
+import { ref, reactive } from 'vue'
+import { api } from '@/api'
 
 const results = ref([])
 
-const drawOnce = async () => {
-  const res = await api.drawNormal()
-  results.value.unshift("获得：" + JSON.stringify(res.data))
+const draw = async (type) => {
+  try {
+    const res = await api.gachaDraw({ type })
+
+    if (!res || res.code !== 0 || !res.data) {
+      // ❌ 失败：不 alert，交给外面
+      return { ok: false, msg: res?.msg || '抽奖失败' }
+    }
+
+    const d = res.data
+
+    let rarityText = ''
+    if (d.rarity === 'epic') rarityText = '【史诗】'
+    else if (d.rarity === 'rare') rarityText = '【稀有】'
+    else rarityText = '【普通】'
+
+    results.value.unshift({
+      rarity: d.rarity,
+      text: `${rarityText} ${d.rewardName}`
+    })
+
+    // ✅ 成功一定要 return
+    return { ok: true }
+
+  } catch (e) {
+    console.error(e)
+    return { ok: false, msg: '网络或服务器错误' }
+  }
 }
 
-const drawTen = () => {
-  for (let i = 0; i < 10; i++) drawOnce()
+const drawOne = async (type) => {
+  const result = await draw(type)
+  if (!result.ok) {
+    alert(result.msg || '金币不足')
+  }
 }
+
+
+const drawTen = async (type) => {
+  for (let i = 0; i < 10; i++) {
+    const result = await draw(type)
+
+    if (!result.ok) {
+      alert(result.msg || '金币不足')
+      break   // ⭐ 中断十连
+    }
+  }
+}
+
+
 </script>
 
-
 <style scoped>
-.page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-.page-title { font-size: 28px; font-weight: 700; margin-bottom: 18px; }
+.page-wrap {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
 
-.draw-panel { display:flex; gap:24px; align-items:flex-start; }
-.pool-card { background:#fff; padding:18px; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.04); width:320px; text-align:center; }
-.pool-card button { margin-top:12px; padding:8px 12px; border-radius:8px; border:none; cursor:pointer; }
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
 
-.result-list { flex:1; background:#fff; padding:16px; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
-.result-item { padding:8px 0; border-bottom:1px dashed #eee; }
+.draw-panel {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.pool-card {
+  width: 260px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+.pool-card.advanced {
+  border: 2px solid #ffd36a;
+}
+
+.pool-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pool-cost {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+.pool-desc {
+  margin: 12px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.pool-card button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #409eff;
+  color: #fff;
+}
+
+.pool-card.advanced button {
+  background: #f5a623;
+}
+
+.pool-card button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.lock-tip {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #d9534f;
+}
+
+.result-list {
+  flex: 1;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.result-item {
+  padding: 10px 6px;
+  border-bottom: 1px dashed #eee;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  animation: popIn 0.35s ease;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* 稀有度颜色 */
+.result-item.normal {
+  color: #333;
+  background: #f7f7f7;
+}
+
+.result-item.rare {
+  color: #409eff;
+  background: #eaf3ff;
+}
+
+.result-item.epic {
+  color: #d9534f;
+  background: #fff0f0;
+}
+
+
+.result-hint {
+  color: #aaa;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.result-item.epic {
+  box-shadow: 0 0 0 1px rgba(217,83,79,0.3);
+}
+
+.gacha-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  /* ⭐ 让抽奖卡整体“往中间靠” */
+  padding-top: 40px;
+}
+
+.result-title {
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #555;
+}
+
 </style>

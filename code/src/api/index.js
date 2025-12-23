@@ -17,11 +17,9 @@ export const api = {
         instance.post("/explore", { locationId }).then(r => r.data),
 
     // 抽奖
-    drawNormal: () =>
-        instance.post("/draw/normal").then(r => r.data),
+    gachaDraw: (data) =>
+        instance.post("/gacha/draw", data).then(r => r.data),
 
-    drawAdvanced: () =>
-        instance.post("/draw/advanced").then(r => r.data),
 
     // 图鉴
     getDex: () =>

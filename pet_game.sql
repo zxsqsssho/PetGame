@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 23/12/2025 16:41:04
+ Date: 23/12/2025 22:05:46
 */
 
 SET NAMES utf8mb4;
@@ -109,53 +109,62 @@ INSERT INTO `food_base` VALUES (15, '古代核心', '适合遗迹之王食用', 
 -- ----------------------------
 DROP TABLE IF EXISTS `gacha_logs`;
 CREATE TABLE `gacha_logs`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '记录ID',
-  `user_id` int(11) NULL DEFAULT NULL COMMENT '玩家ID',
-  `pet_id` int(11) NULL DEFAULT NULL COMMENT '抽到的宠物ID',
-  `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '抽奖时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `gacha_type` enum('normal','advanced') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `reward_type` enum('coin','pet','food') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `reward_id` int(11) NULL DEFAULT NULL,
+  `reward_amount` int(11) NULL DEFAULT NULL,
+  `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP,
+  `reward_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励名称快照',
+  `rarity` enum('normal','rare','epic') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '稀有度',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE,
-  INDEX `pet_id`(`pet_id`) USING BTREE,
-  CONSTRAINT `gacha_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `gacha_logs_ibfk_2` FOREIGN KEY (`pet_id`) REFERENCES `pets_base` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '抽奖日志表' ROW_FORMAT = Dynamic;
+  CONSTRAINT `gacha_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 53 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of gacha_logs
+-- ----------------------------
+INSERT INTO `gacha_logs` VALUES (42, 3, 'normal', 'coin', 121, NULL, '2025-12-23 21:54:32', '121 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (43, 3, 'normal', 'food', 5, NULL, '2025-12-23 21:54:34', '胡萝卜', 'normal');
+INSERT INTO `gacha_logs` VALUES (44, 3, 'normal', 'coin', 173, NULL, '2025-12-23 21:54:35', '173 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (45, 3, 'normal', 'coin', 188, NULL, '2025-12-23 21:54:36', '188 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (46, 3, 'normal', 'pet', 4, NULL, '2025-12-23 21:54:37', '松鼠', 'normal');
+INSERT INTO `gacha_logs` VALUES (47, 3, 'normal', 'coin', 181, NULL, '2025-12-23 21:54:42', '181 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (48, 3, 'normal', 'coin', 70, NULL, '2025-12-23 21:54:42', '70 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (49, 3, 'normal', 'coin', 68, NULL, '2025-12-23 21:56:54', '68 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (50, 3, 'normal', 'pet', 4, NULL, '2025-12-23 21:56:55', '松鼠', 'normal');
+INSERT INTO `gacha_logs` VALUES (51, 3, 'normal', 'food', 2, NULL, '2025-12-23 21:56:55', '骨头', 'normal');
+INSERT INTO `gacha_logs` VALUES (52, 3, 'normal', 'food', 2, NULL, '2025-12-23 21:56:55', '骨头', 'normal');
 
 -- ----------------------------
 -- Table structure for gacha_pool
 -- ----------------------------
 DROP TABLE IF EXISTS `gacha_pool`;
 CREATE TABLE `gacha_pool`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '抽奖池条目ID',
-  `pet_id` int(11) NOT NULL COMMENT '对应宠物ID',
-  `weight` int(11) NULL DEFAULT 1 COMMENT '掉落权重',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `pet_id`(`pet_id`) USING BTREE,
-  CONSTRAINT `gacha_pool_ibfk_1` FOREIGN KEY (`pet_id`) REFERENCES `pets_base` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '扭蛋抽奖池（用于抽奖获得宠物）' ROW_FORMAT = Dynamic;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gacha_type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `reward_type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `min_id` int(11) NOT NULL,
+  `max_id` int(11) NOT NULL,
+  `weight` int(11) NOT NULL,
+  `rarity` enum('normal','rare','epic') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励稀有度',
+  `reward_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励显示名称',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of gacha_pool
 -- ----------------------------
-INSERT INTO `gacha_pool` VALUES (1, 1, 20);
-INSERT INTO `gacha_pool` VALUES (2, 2, 20);
-INSERT INTO `gacha_pool` VALUES (3, 3, 20);
-INSERT INTO `gacha_pool` VALUES (4, 4, 15);
-INSERT INTO `gacha_pool` VALUES (5, 5, 15);
-INSERT INTO `gacha_pool` VALUES (6, 6, 5);
-INSERT INTO `gacha_pool` VALUES (7, 7, 4);
-INSERT INTO `gacha_pool` VALUES (8, 8, 3);
-INSERT INTO `gacha_pool` VALUES (9, 9, 2);
-INSERT INTO `gacha_pool` VALUES (10, 10, 1);
-INSERT INTO `gacha_pool` VALUES (11, 6, 10);
-INSERT INTO `gacha_pool` VALUES (12, 7, 10);
-INSERT INTO `gacha_pool` VALUES (13, 8, 10);
-INSERT INTO `gacha_pool` VALUES (14, 9, 10);
-INSERT INTO `gacha_pool` VALUES (15, 10, 10);
-INSERT INTO `gacha_pool` VALUES (16, 11, 8);
-INSERT INTO `gacha_pool` VALUES (17, 12, 8);
-INSERT INTO `gacha_pool` VALUES (18, 13, 8);
-INSERT INTO `gacha_pool` VALUES (19, 14, 8);
-INSERT INTO `gacha_pool` VALUES (20, 15, 8);
+INSERT INTO `gacha_pool` VALUES (1, 'normal', 'coin', 1, 200, 5, 'normal', '金币');
+INSERT INTO `gacha_pool` VALUES (2, 'normal', 'pet', 1, 5, 2, 'normal', '普通宠物');
+INSERT INTO `gacha_pool` VALUES (3, 'normal', 'food', 1, 5, 3, 'normal', '普通食物');
+INSERT INTO `gacha_pool` VALUES (4, 'advanced', 'coin', 100, 500, 4, 'normal', '金币');
+INSERT INTO `gacha_pool` VALUES (5, 'advanced', 'pet', 6, 10, 2, 'rare', '稀有宠物');
+INSERT INTO `gacha_pool` VALUES (6, 'advanced', 'food', 6, 10, 2, 'rare', '高级食物');
+INSERT INTO `gacha_pool` VALUES (7, 'advanced', 'pet', 11, 15, 1, 'epic', '史诗宠物');
+INSERT INTO `gacha_pool` VALUES (8, 'advanced', 'food', 11, 15, 1, 'epic', '史诗食物');
 
 -- ----------------------------
 -- Table structure for locations
@@ -233,9 +242,7 @@ INSERT INTO `shop_items` VALUES (2, '骨头', 20, '适合小狗食用', '/shop/�
 INSERT INTO `shop_items` VALUES (3, '种子', 20, '适合麻雀食用', '/shop/种子.png', 1, 2);
 INSERT INTO `shop_items` VALUES (4, '坚果', 20, '适合松鼠食用', '/shop/坚果.png', 1, 2);
 INSERT INTO `shop_items` VALUES (5, '胡萝卜', 20, '适合白兔食用', '/shop/胡萝卜.png', 1, 2);
-INSERT INTO `shop_items` VALUES (6, '普通抽奖券', 100, '可进行一次普通抽奖', '/shop/普通抽奖券.png', 0, 0);
-INSERT INTO `shop_items` VALUES (7, '高级食物', 300, '所有宠物都能吃，降低更多疲劳值', '/shop/高级食物.png', 1, 50);
-INSERT INTO `shop_items` VALUES (8, '高级抽奖券', 500, '可进行一次高级抽奖', '/shop/高级抽奖券.png', 0, 0);
+INSERT INTO `shop_items` VALUES (6, '高级食物', 300, '所有宠物都能吃，降低更多疲劳值', '/shop/高级食物.png', 1, 50);
 
 -- ----------------------------
 -- Table structure for user_items
@@ -251,7 +258,7 @@ CREATE TABLE `user_items`  (
   INDEX `item_id`(`item_id`) USING BTREE,
   CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `shop_items` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_items
@@ -261,6 +268,22 @@ INSERT INTO `user_items` VALUES (2, 1, 3, 2);
 INSERT INTO `user_items` VALUES (3, 1, 2, 3);
 INSERT INTO `user_items` VALUES (4, 1, 5, 2);
 INSERT INTO `user_items` VALUES (5, 1, 4, 1);
+INSERT INTO `user_items` VALUES (6, 2, 1, 6);
+INSERT INTO `user_items` VALUES (7, 2, 6, 1);
+INSERT INTO `user_items` VALUES (8, 2, 3, 1);
+INSERT INTO `user_items` VALUES (10, 2, 3, 1);
+INSERT INTO `user_items` VALUES (11, 2, 2, 1);
+INSERT INTO `user_items` VALUES (12, 2, 1, 1);
+INSERT INTO `user_items` VALUES (13, 2, 3, 1);
+INSERT INTO `user_items` VALUES (14, 2, 2, 1);
+INSERT INTO `user_items` VALUES (15, 3, 1, 5);
+INSERT INTO `user_items` VALUES (16, 3, 6, 1);
+INSERT INTO `user_items` VALUES (17, 3, 4, 1);
+INSERT INTO `user_items` VALUES (18, 3, 3, 1);
+INSERT INTO `user_items` VALUES (19, 3, 5, 1);
+INSERT INTO `user_items` VALUES (20, 3, 5, 1);
+INSERT INTO `user_items` VALUES (21, 3, 2, 1);
+INSERT INTO `user_items` VALUES (22, 3, 2, 1);
 
 -- ----------------------------
 -- Table structure for user_pets
@@ -280,7 +303,7 @@ CREATE TABLE `user_pets`  (
   INDEX `pet_id`(`pet_id`) USING BTREE,
   CONSTRAINT `user_pets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_pets_ibfk_2` FOREIGN KEY (`pet_id`) REFERENCES `pets_base` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_pets
@@ -288,6 +311,19 @@ CREATE TABLE `user_pets`  (
 INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫', '2025-12-06 23:10:45', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗', '2025-12-06 23:10:45', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (3, 1, 6, '蓝鳍鱼', '2025-12-18 23:14:37', 0, 30, 0);
+INSERT INTO `user_pets` VALUES (4, 2, 1, '我的小猫', '2025-12-23 20:54:22', 0, 10, 1);
+INSERT INTO `user_pets` VALUES (5, 2, 4, NULL, '2025-12-23 21:34:01', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (6, 2, 1, NULL, '2025-12-23 21:34:01', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (7, 2, 5, NULL, '2025-12-23 21:34:12', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (8, 2, 5, NULL, '2025-12-23 21:34:13', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (9, 2, 8, NULL, '2025-12-23 21:35:01', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (10, 2, 3, NULL, '2025-12-23 21:40:22', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (11, 3, 1, '我的小猫', '2025-12-23 21:41:17', 0, 10, 1);
+INSERT INTO `user_pets` VALUES (12, 3, 7, NULL, '2025-12-23 21:41:35', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (13, 3, 5, NULL, '2025-12-23 21:42:55', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (14, 3, 1, NULL, '2025-12-23 21:42:55', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (15, 3, 4, NULL, '2025-12-23 21:54:37', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (16, 3, 4, NULL, '2025-12-23 21:56:55', 0, 10, 0);
 
 -- ----------------------------
 -- Table structure for users
@@ -304,11 +340,13 @@ CREATE TABLE `users`  (
   `update_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '用户信息更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `account`(`account`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表（存储玩家账号、属性等基础资料）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表（存储玩家账号、属性等基础资料）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 9083, '2025-12-06 23:10:34', '2025-12-22 20:10:14');
+INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 1111119083, '2025-12-06 23:10:34', '2025-12-23 22:05:25');
+INSERT INTO `users` VALUES (2, 'cst', 'cst', '123456', '/avatars/txone.jpg', 174, '2025-12-23 20:54:22', '2025-12-23 22:05:27');
+INSERT INTO `users` VALUES (3, 'xmm', 'xmm', '123456', '/avatars/txone.jpg', 20, '2025-12-23 21:41:17', '2025-12-23 21:56:55');
 
 SET FOREIGN_KEY_CHECKS = 1;
