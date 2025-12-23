@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 @WebServlet("/api/user/login")
 public class LoginServlet extends HttpServlet {
     private Gson gson = new Gson();
+    private static final String LOCAL_ASSETS_PATH = "../assets/";
+    private static final String DEFAULT_AVATAR = "txone.jpg";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -105,12 +107,35 @@ public class LoginServlet extends HttpServlet {
                 data.addProperty("account", account);
                 data.addProperty("name", rs.getString("name"));
 
-                // 处理头像URL
+                // 处理头像路径 - 直接使用数据库存储的本地路径
                 String avatar = rs.getString("avatar");
-                if (avatar == null || avatar.isEmpty()) {
-                    avatar = "/avatars/default.png";
+
+                // 如果数据库中没有头像或头像为空，使用默认本地路径
+                if (avatar == null || avatar.trim().isEmpty()) {
+                    avatar = LOCAL_ASSETS_PATH + DEFAULT_AVATAR;
+                    System.out.println("使用默认头像: " + avatar);
                 }
-                data.addProperty("avatar", avatar);
+
+                // 确保头像路径是正确的本地路径
+                if (!avatar.startsWith("C:")) {
+                    // 如果不是本地路径，尝试修正为本地路径
+                    String fileName = avatar.contains("/") ?
+                            avatar.substring(avatar.lastIndexOf("/") + 1) :
+                            avatar;
+                    avatar = LOCAL_ASSETS_PATH + fileName;
+                }
+
+                // 检查头像文件是否存在
+                java.io.File avatarFile = new java.io.File(avatar);
+                if (!avatarFile.exists()) {
+                    System.err.println("头像文件不存在: " + avatar);
+                    avatar = LOCAL_ASSETS_PATH + DEFAULT_AVATAR;
+                    System.out.println("使用默认头像: " + avatar);
+                }
+
+                // 返回给前端的是文件名（不含路径），前端通过专门的Servlet获取图片
+                String avatarFileName = avatar.substring(avatar.lastIndexOf("\\") + 1);
+                data.addProperty("avatar", avatarFileName);
 
                 data.addProperty("coins", rs.getInt("coins"));
                 data.addProperty("sessionId", session.getId());

@@ -10,13 +10,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet("/api/user/register")  // 确保这个路径正确
+@WebServlet("/api/user/register")
 public class RegisterServlet extends HttpServlet {
     private Gson gson = new Gson();
 
+    // 本地头像路径
+    private static final String LOCAL_ASSETS_PATH = "../asset/";
+    private static final String DEFAULT_AVATAR = "txone.jpg";
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // 添加详细的日志输出
         System.out.println("=== RegisterServlet 开始处理 ===");
 
         req.setCharacterEncoding("UTF-8");
@@ -42,7 +45,7 @@ public class RegisterServlet extends HttpServlet {
             String account = null;
             String name = null;
             String password = null;
-            String avatar = "/avatars/txone.jpg"; // 默认选择第一张头像
+            String avatar = LOCAL_ASSETS_PATH + DEFAULT_AVATAR; // 默认选择第一张头像（本地路径）
 
             // 读取JSON数据
             BufferedReader reader = req.getReader();
@@ -65,7 +68,13 @@ public class RegisterServlet extends HttpServlet {
 
                         // 获取头像参数，如果没有则使用默认值
                         if (json.has("avatar") && !json.get("avatar").isJsonNull()) {
-                            avatar = json.get("avatar").getAsString();
+                            String avatarName = json.get("avatar").getAsString();
+                            // 如果前端只传了文件名，添加完整路径
+                            if (!avatarName.startsWith("C:")) {
+                                avatar = LOCAL_ASSETS_PATH + avatarName;
+                            } else {
+                                avatar = avatarName;
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -95,24 +104,30 @@ public class RegisterServlet extends HttpServlet {
             name = name.trim();
             password = password.trim();
 
-            // 验证头像路径
+            // 验证本地头像文件是否存在
             String[] validAvatars = {
-                    "/avatars/txone.jpg",
-                    "/avatars/txtwo.jpg",
-                    "/avatars/txthree.jpg"
+                    LOCAL_ASSETS_PATH + "txone.jpg",
+                    LOCAL_ASSETS_PATH + "txtwo.jpg",
+                    LOCAL_ASSETS_PATH + "txthree.jpg"
             };
 
             boolean validAvatar = false;
             for (String valid : validAvatars) {
                 if (valid.equals(avatar)) {
-                    validAvatar = true;
-                    break;
+                    File avatarFile = new File(avatar);
+                    if (avatarFile.exists()) {
+                        validAvatar = true;
+                        break;
+                    } else {
+                        System.err.println("头像文件不存在: " + avatar);
+                    }
                 }
             }
 
             if (!validAvatar) {
                 // 如果头像无效，使用第一张作为默认
-                avatar = "/avatars/txone.jpg";
+                avatar = LOCAL_ASSETS_PATH + DEFAULT_AVATAR;
+                System.out.println("使用默认头像: " + avatar);
             }
 
             // 验证输入
@@ -159,13 +174,13 @@ public class RegisterServlet extends HttpServlet {
                     return;
                 }
 
-                // 插入新用户
+                // 插入新用户 - 存储完整的本地路径
                 String insertSql = "INSERT INTO users(account, name, password, avatar, coins) VALUES(?, ?, ?, ?, ?)";
                 PreparedStatement insertStmt = conn.prepareStatement(insertSql, PreparedStatement.RETURN_GENERATED_KEYS);
                 insertStmt.setString(1, account);
                 insertStmt.setString(2, name);
                 insertStmt.setString(3, password);
-                insertStmt.setString(4, avatar);
+                insertStmt.setString(4, avatar); // 存储完整的本地路径
                 insertStmt.setInt(5, 1000); // 新用户赠送1000金币
 
                 System.out.println("执行SQL: " + insertSql);
@@ -197,7 +212,11 @@ public class RegisterServlet extends HttpServlet {
                     data.addProperty("id", userId);
                     data.addProperty("account", account);
                     data.addProperty("name", name);
-                    data.addProperty("avatar", avatar);
+
+                    // 返回给前端的是文件名（不含路径）
+                    String avatarFileName = avatar.substring(avatar.lastIndexOf("\\") + 1);
+                    data.addProperty("avatar", avatarFileName);
+
                     data.addProperty("coins", 1000);
 
                     responseJson.addProperty("code", 0);
