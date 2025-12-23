@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 24/12/2025 00:22:34
+ Date: 24/12/2025 02:29:58
 */
 
 SET NAMES utf8mb4;
@@ -55,27 +55,28 @@ CREATE TABLE `food_base`  (
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '食物名称',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '食物说明',
   `is_universal` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否通用食物（1=所有宠物可吃）',
+  `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '食物图标URL',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '食物图鉴表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of food_base
 -- ----------------------------
-INSERT INTO `food_base` VALUES (1, '鱼干', '适合小猫食用', 0);
-INSERT INTO `food_base` VALUES (2, '骨头', '适合小狗食用', 0);
-INSERT INTO `food_base` VALUES (3, '种子', '适合麻雀食用', 0);
-INSERT INTO `food_base` VALUES (4, '坚果', '适合松鼠食用', 0);
-INSERT INTO `food_base` VALUES (5, '胡萝卜', '适合白兔食用', 0);
-INSERT INTO `food_base` VALUES (6, '小鱼虾', '适合蓝鳍鱼食用', 0);
-INSERT INTO `food_base` VALUES (7, '电能饵', '适合电鳗食用', 0);
-INSERT INTO `food_base` VALUES (8, '水晶藻', '适合水晶鲤食用', 0);
-INSERT INTO `food_base` VALUES (9, '深湖肉块', '适合深湖妖鱼食用', 0);
-INSERT INTO `food_base` VALUES (10, '荧光浮游生物', '适合发光水母食用', 0);
-INSERT INTO `food_base` VALUES (11, '魔能矿石', '适合石像守卫食用', 0);
-INSERT INTO `food_base` VALUES (12, '灵魂碎片', '适合遗迹灵魂食用', 0);
-INSERT INTO `food_base` VALUES (13, '巨鸟果实', '适合石羽巨鸟食用', 0);
-INSERT INTO `food_base` VALUES (14, '金属能量块', '适合黄金魔像食用', 0);
-INSERT INTO `food_base` VALUES (15, '古代核心', '适合遗迹之王食用', 0);
+INSERT INTO `food_base` VALUES (1, '鱼干', '适合小猫食用', 0, '/shop/鱼干.png');
+INSERT INTO `food_base` VALUES (2, '骨头', '适合小狗食用', 0, '/shop/骨头.png');
+INSERT INTO `food_base` VALUES (3, '种子', '适合麻雀食用', 0, '/shop/种子.png');
+INSERT INTO `food_base` VALUES (4, '坚果', '适合松鼠食用', 0, '/shop/坚果.png');
+INSERT INTO `food_base` VALUES (5, '胡萝卜', '适合白兔食用', 0, '/shop/胡萝卜.png');
+INSERT INTO `food_base` VALUES (6, '小鱼虾', '适合蓝鳍鱼食用', 0, '/shop/小鱼虾.png');
+INSERT INTO `food_base` VALUES (7, '电能饵', '适合电鳗食用', 0, '/shop/电能饵.png');
+INSERT INTO `food_base` VALUES (8, '水晶藻', '适合水晶鲤食用', 0, '/shop/水晶藻.png');
+INSERT INTO `food_base` VALUES (9, '深湖肉块', '适合深湖妖鱼食用', 0, '/shop/深湖肉块.png');
+INSERT INTO `food_base` VALUES (10, '荧光浮游生物', '适合发光水母食用', 0, '/shop/荧光浮游生物.png');
+INSERT INTO `food_base` VALUES (11, '魔能矿石', '适合石像守卫食用', 0, '/shop/魔能矿石.png');
+INSERT INTO `food_base` VALUES (12, '灵魂碎片', '适合遗迹灵魂食用', 0, '/shop/灵魂碎片.png');
+INSERT INTO `food_base` VALUES (13, '巨鸟果实', '适合石羽巨鸟食用', 0, '/shop/巨鸟果实.png');
+INSERT INTO `food_base` VALUES (14, '金属能量块', '适合黄金魔像食用', 0, '/shop/金属能量块.png');
+INSERT INTO `food_base` VALUES (15, '古代核心', '适合遗迹之王食用', 0, '/shop/古代核心.png');
 
 -- ----------------------------
 -- Table structure for gacha_logs
@@ -189,18 +190,18 @@ CREATE TABLE `pets_base`  (
 INSERT INTO `pets_base` VALUES (1, '小猫', 1, '温顺的猫咪，适合陪伴新手训练师', '/icons/cat.png', 1, 10);
 INSERT INTO `pets_base` VALUES (2, '小狗', 1, '活泼可爱的小狗，喜欢跑来跑去', '/icons/dog.png', 2, 10);
 INSERT INTO `pets_base` VALUES (3, '麻雀', 1, '随处可见的小鸟，但精力充沛', '/icons/maque.png', 3, 10);
-INSERT INTO `pets_base` VALUES (4, '松鼠', 1, '喜欢囤积食物','/icons/songshu.png', 4, 10);
+INSERT INTO `pets_base` VALUES (4, '松鼠', 1, '喜欢囤积食物', '/icons/songshu.png', 4, 10);
 INSERT INTO `pets_base` VALUES (5, '白兔', 1, '机灵的小兔子，经常四处乱跳', '/icons/baitu.png', 5, 10);
 INSERT INTO `pets_base` VALUES (6, '蓝鳍鱼', 2, '闪亮鳍片的蓝色小鱼', '/icons/bluefish.png', 6, 30);
 INSERT INTO `pets_base` VALUES (7, '电鳗', 2, '身体带电的奇怪生物', '/icons/dianmang.png', 7, 30);
 INSERT INTO `pets_base` VALUES (8, '水晶鲤', 2, '据说能带来好运的稀有鱼类', '/icons/li.png', 8, 30);
 INSERT INTO `pets_base` VALUES (9, '深湖妖鱼', 2, '湖泊深处出现的神秘生物', '/icons/deepfish.png', 9, 30);
-INSERT INTO `pets_base` VALUES (10, '发光水母', 2, '拥有发光触手的灵性水母', '/icons/deepfish.png', 10, 30);
-INSERT INTO `pets_base` VALUES (11, '石像守卫', 3, '古代遗迹的守门者，体型巨大', '/icons/deepfish.png', 11, 50);
-INSERT INTO `pets_base` VALUES (12, '遗迹灵魂', 3, '遗迹中残存的能量实体', '/icons/deepfish.png', 12, 50);
-INSERT INTO `pets_base` VALUES (13, '石羽巨鸟', 3, '传说中俯瞰遗迹的巨鸟', '/icons/deepfish.png', 13, 50);
-INSERT INTO `pets_base` VALUES (14, '黄金魔像', 3, '由宝石与金属构成的古代造物', '/icons/deepfish.png', 14, 50);
-INSERT INTO `pets_base` VALUES (15, '遗迹之王', 3, '掌握古代能量的神秘王者', '/icons/deepfish.png', 15, 50);
+INSERT INTO `pets_base` VALUES (10, '发光水母', 2, '拥有发光触手的灵性水母', '/icons/bulingbuling.png', 10, 30);
+INSERT INTO `pets_base` VALUES (11, '石像守卫', 3, '古代遗迹的守门者，体型巨大', '/icons/stone.png', 11, 50);
+INSERT INTO `pets_base` VALUES (12, '遗迹灵魂', 3, '遗迹中残存的能量实体', '/icons/ghost.png', 12, 50);
+INSERT INTO `pets_base` VALUES (13, '石羽巨鸟', 3, '传说中俯瞰遗迹的巨鸟', '/icons/bigbird.png', 13, 50);
+INSERT INTO `pets_base` VALUES (14, '黄金魔像', 3, '由宝石与金属构成的古代造物', '/icons/golden.png', 14, 50);
+INSERT INTO `pets_base` VALUES (15, '遗迹之王', 3, '掌握古代能量的神秘王者', '/icons/king.png', 15, 50);
 
 -- ----------------------------
 -- Table structure for shop_items
@@ -385,4 +386,3 @@ INSERT INTO `users` VALUES (2, 'cst', 'cst', '123456', '/avatars/txone.jpg', 174
 INSERT INTO `users` VALUES (3, 'xmm', 'xmm', '123456', '/avatars/txone.jpg', 20, '2025-12-23 21:41:17', '2025-12-23 21:56:55');
 
 SET FOREIGN_KEY_CHECKS = 1;
-
