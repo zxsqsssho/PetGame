@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 24/12/2025 02:29:58
+ Date: 24/12/2025 03:02:50
 */
 
 SET NAMES utf8mb4;
@@ -96,31 +96,6 @@ CREATE TABLE `gacha_logs`  (
   INDEX `user_id`(`user_id`) USING BTREE,
   CONSTRAINT `gacha_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of gacha_logs
--- ----------------------------
-INSERT INTO `gacha_logs` VALUES (42, 3, 'normal', 'coin', 121, NULL, '2025-12-23 21:54:32', '121 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (43, 3, 'normal', 'food', 5, NULL, '2025-12-23 21:54:34', '胡萝卜', 'normal');
-INSERT INTO `gacha_logs` VALUES (44, 3, 'normal', 'coin', 173, NULL, '2025-12-23 21:54:35', '173 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (45, 3, 'normal', 'coin', 188, NULL, '2025-12-23 21:54:36', '188 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (46, 3, 'normal', 'pet', 4, NULL, '2025-12-23 21:54:37', '松鼠', 'normal');
-INSERT INTO `gacha_logs` VALUES (47, 3, 'normal', 'coin', 181, NULL, '2025-12-23 21:54:42', '181 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (48, 3, 'normal', 'coin', 70, NULL, '2025-12-23 21:54:42', '70 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (49, 3, 'normal', 'coin', 68, NULL, '2025-12-23 21:56:54', '68 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (50, 3, 'normal', 'pet', 4, NULL, '2025-12-23 21:56:55', '松鼠', 'normal');
-INSERT INTO `gacha_logs` VALUES (51, 3, 'normal', 'food', 2, NULL, '2025-12-23 21:56:55', '骨头', 'normal');
-INSERT INTO `gacha_logs` VALUES (52, 3, 'normal', 'food', 2, NULL, '2025-12-23 21:56:55', '骨头', 'normal');
-INSERT INTO `gacha_logs` VALUES (53, 2, 'advanced', 'pet', 6, NULL, '2025-12-24 00:21:52', '蓝鳍鱼', 'normal');
-INSERT INTO `gacha_logs` VALUES (54, 2, 'advanced', 'coin', 428, NULL, '2025-12-24 00:21:52', '428 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (55, 2, 'advanced', 'food', 12, NULL, '2025-12-24 00:21:52', '灵魂碎片', 'normal');
-INSERT INTO `gacha_logs` VALUES (56, 2, 'advanced', 'pet', 9, NULL, '2025-12-24 00:21:52', '深湖妖鱼', 'normal');
-INSERT INTO `gacha_logs` VALUES (57, 2, 'advanced', 'coin', 528, NULL, '2025-12-24 00:21:52', '528 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (58, 2, 'advanced', 'food', 10, NULL, '2025-12-24 00:21:52', '荧光浮游生物', 'normal');
-INSERT INTO `gacha_logs` VALUES (59, 2, 'advanced', 'pet', 11, NULL, '2025-12-24 00:21:52', '石像守卫', 'normal');
-INSERT INTO `gacha_logs` VALUES (60, 2, 'advanced', 'coin', 383, NULL, '2025-12-24 00:21:52', '383 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (61, 2, 'advanced', 'coin', 598, NULL, '2025-12-24 00:21:52', '598 金币', 'normal');
-INSERT INTO `gacha_logs` VALUES (62, 2, 'advanced', 'food', 7, NULL, '2025-12-24 00:21:52', '电能饵', 'normal');
 
 -- ----------------------------
 -- Table structure for gacha_pool
@@ -251,29 +226,6 @@ INSERT INTO `user_items` VALUES (2, 1, 3, 2);
 INSERT INTO `user_items` VALUES (3, 1, 2, 3);
 INSERT INTO `user_items` VALUES (4, 1, 5, 2);
 INSERT INTO `user_items` VALUES (5, 1, 4, 1);
-INSERT INTO `user_items` VALUES (15, 3, 1, 5);
-INSERT INTO `user_items` VALUES (16, 3, 6, 1);
-INSERT INTO `user_items` VALUES (17, 3, 4, 1);
-INSERT INTO `user_items` VALUES (18, 3, 3, 1);
-INSERT INTO `user_items` VALUES (19, 3, 5, 1);
-INSERT INTO `user_items` VALUES (20, 3, 5, 1);
-INSERT INTO `user_items` VALUES (21, 3, 2, 1);
-INSERT INTO `user_items` VALUES (22, 3, 2, 1);
-INSERT INTO `user_items` VALUES (25, 2, 1, 6);
-INSERT INTO `user_items` VALUES (26, 2, 5, 2);
-INSERT INTO `user_items` VALUES (27, 2, 2, 1);
-INSERT INTO `user_items` VALUES (39, 2, 6, 31);
-INSERT INTO `user_items` VALUES (42, 2, 4, 2);
-INSERT INTO `user_items` VALUES (46, 2, 10, 3);
-INSERT INTO `user_items` VALUES (47, 2, 8, 3);
-INSERT INTO `user_items` VALUES (48, 2, 9, 3);
-INSERT INTO `user_items` VALUES (49, 2, 12, 1);
-INSERT INTO `user_items` VALUES (50, 2, 15, 1);
-INSERT INTO `user_items` VALUES (51, 2, 13, 1);
-INSERT INTO `user_items` VALUES (52, 2, 7, 1);
-INSERT INTO `user_items` VALUES (53, 2, 12, 1);
-INSERT INTO `user_items` VALUES (54, 2, 10, 1);
-INSERT INTO `user_items` VALUES (55, 2, 7, 1);
 
 -- ----------------------------
 -- Table structure for user_pets
@@ -301,65 +253,6 @@ CREATE TABLE `user_pets`  (
 INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫', '2025-12-06 23:10:45', 10, 10, 0);
 INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗', '2025-12-06 23:10:45', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (3, 1, 6, '蓝鳍鱼', '2025-12-18 23:14:37', 0, 30, 0);
-INSERT INTO `user_pets` VALUES (4, 2, 1, '我的小猫', '2025-12-23 20:54:22', 0, 10, 1);
-INSERT INTO `user_pets` VALUES (5, 2, 4, NULL, '2025-12-23 21:34:01', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (6, 2, 1, NULL, '2025-12-23 21:34:01', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (7, 2, 5, NULL, '2025-12-23 21:34:12', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (8, 2, 5, NULL, '2025-12-23 21:34:13', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (9, 2, 8, NULL, '2025-12-23 21:35:01', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (10, 2, 3, NULL, '2025-12-23 21:40:22', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (11, 3, 1, '我的小猫', '2025-12-23 21:41:17', 0, 10, 1);
-INSERT INTO `user_pets` VALUES (12, 3, 7, NULL, '2025-12-23 21:41:35', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (13, 3, 5, NULL, '2025-12-23 21:42:55', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (14, 3, 1, NULL, '2025-12-23 21:42:55', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (15, 3, 4, NULL, '2025-12-23 21:54:37', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (16, 3, 4, NULL, '2025-12-23 21:56:55', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (17, 1, 2, NULL, '2025-12-23 22:58:25', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (18, 2, 8, NULL, '2025-12-23 23:16:52', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (19, 2, 10, NULL, '2025-12-23 23:17:05', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (20, 2, 3, NULL, '2025-12-23 23:17:07', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (21, 2, 1, NULL, '2025-12-23 23:19:52', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (22, 2, 6, NULL, '2025-12-23 23:19:56', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (23, 2, 7, NULL, '2025-12-23 23:20:16', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (24, 2, 6, NULL, '2025-12-23 23:20:17', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (25, 2, 6, NULL, '2025-12-23 23:21:35', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (26, 2, 15, NULL, '2025-12-23 23:24:29', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (27, 2, 8, NULL, '2025-12-23 23:24:43', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (28, 2, 8, NULL, '2025-12-23 23:24:47', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (29, 2, 7, NULL, '2025-12-23 23:31:40', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (30, 2, 9, NULL, '2025-12-23 23:32:12', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (31, 2, 9, NULL, '2025-12-23 23:37:49', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (32, 2, 14, NULL, '2025-12-23 23:38:22', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (33, 2, 13, NULL, '2025-12-23 23:38:37', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (34, 2, 12, NULL, '2025-12-23 23:38:42', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (35, 2, 12, NULL, '2025-12-23 23:38:43', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (36, 2, 15, NULL, '2025-12-23 23:38:44', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (37, 2, 5, NULL, '2025-12-23 23:41:37', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (38, 2, 5, NULL, '2025-12-24 00:11:46', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (39, 2, 5, NULL, '2025-12-24 00:11:47', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (40, 2, 8, NULL, '2025-12-24 00:11:52', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (41, 2, 8, NULL, '2025-12-24 00:11:53', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (42, 2, 6, NULL, '2025-12-24 00:13:49', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (43, 2, 10, NULL, '2025-12-24 00:13:51', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (44, 2, 6, NULL, '2025-12-24 00:13:53', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (45, 2, 8, NULL, '2025-12-24 00:13:54', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (46, 2, 10, NULL, '2025-12-24 00:13:54', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (47, 2, 15, NULL, '2025-12-24 00:13:56', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (48, 2, 14, NULL, '2025-12-24 00:13:58', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (49, 2, 15, NULL, '2025-12-24 00:13:59', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (50, 2, 11, NULL, '2025-12-24 00:14:00', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (51, 2, 13, NULL, '2025-12-24 00:14:01', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (52, 2, 13, NULL, '2025-12-24 00:14:18', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (53, 2, 10, NULL, '2025-12-24 00:14:18', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (54, 2, 9, NULL, '2025-12-24 00:14:19', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (55, 2, 8, NULL, '2025-12-24 00:14:19', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (56, 2, 7, NULL, '2025-12-24 00:14:19', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (57, 2, 8, NULL, '2025-12-24 00:14:21', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (58, 2, 10, NULL, '2025-12-24 00:21:24', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (59, 2, 9, NULL, '2025-12-24 00:21:26', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (60, 2, 6, NULL, '2025-12-24 00:21:52', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (61, 2, 9, NULL, '2025-12-24 00:21:52', 0, 10, 0);
-INSERT INTO `user_pets` VALUES (62, 2, 11, NULL, '2025-12-24 00:21:52', 0, 10, 0);
 
 -- ----------------------------
 -- Table structure for users
@@ -382,7 +275,5 @@ CREATE TABLE `users`  (
 -- Records of users
 -- ----------------------------
 INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', '/avatars/default.jpg', 1111119083, '2025-12-06 23:10:34', '2025-12-23 22:05:25');
-INSERT INTO `users` VALUES (2, 'cst', 'cst', '123456', '/avatars/txone.jpg', 174, '2025-12-23 20:54:22', '2025-12-23 22:05:27');
-INSERT INTO `users` VALUES (3, 'xmm', 'xmm', '123456', '/avatars/txone.jpg', 20, '2025-12-23 21:41:17', '2025-12-23 21:56:55');
 
 SET FOREIGN_KEY_CHECKS = 1;
