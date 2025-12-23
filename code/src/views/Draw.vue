@@ -99,6 +99,12 @@ const draw = async (type) => {
 
     // ⭐ 抽奖成功 → 统一刷新金币
     window.dispatchEvent(new Event('refresh-user-info'))
+    // 1. 添加对UserInfoCard组件的引用
+    const userInfoRef = ref(null)
+    // 刷新用户信息栏的金币数量
+    if (userInfoRef.value && userInfoRef.value.refreshUserInfo) {
+      await userInfoRef.value.refreshUserInfo()
+    }
 
     // ✅ 成功一定要 return
     return { ok: true }
