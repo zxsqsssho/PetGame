@@ -87,7 +87,7 @@ const buy = async (item) => {
   max-width: 1000px;
   margin: 40px auto;
   padding: 20px;
-  margin-top: 80px;
+  margin-top: 0px;
 }
 
 .page-title {

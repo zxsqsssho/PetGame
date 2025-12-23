@@ -59,11 +59,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { onMounted, ref, reactive, onBeforeUnmount } from 'vue'
 import { api } from '@/api'
 import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const results = ref([])
+
+onMounted(() => {
+  // 锁死页面滚动
+  document.body.style.overflow = 'hidden'
+})
+
+onBeforeUnmount(() => {
+  // 恢复页面滚动
+  document.body.style.overflow = ''
+})
 
 const draw = async (type) => {
   try {
@@ -128,7 +138,7 @@ const drawTen = async (type) => {
   max-width: 1100px;
   margin: 40px auto;
   padding: 0 20px;
-  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */
+  margin-top: 30px; /* 为固定定位的用户信息卡片留出空间 */
 }
 
 .page-title {
