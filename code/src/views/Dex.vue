@@ -1,5 +1,7 @@
 <!--code/src/views/Dex.vue-->
 <template>
+  <!-- 使用用户信息卡片组件 -->
+  <UserInfoCard />
   <div class="page-wrap">
     <div class="page-title">图鉴</div>
 
@@ -16,6 +18,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from "@/api/index.js"
+import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const pokedex = ref([])
 
@@ -29,7 +32,7 @@ onMounted(async () => {
 
 
 <style scoped>
-.page-wrap { max-width:1100px; margin:40px auto; padding:0 20px; }
+.page-wrap { max-width:1100px; margin:40px auto; padding:0 20px;  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */padding: 20px;}
 .page-title { font-size:28px; font-weight:700; margin-bottom:18px; }
 .grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:18px; }
 .dex-card { background:#fff; padding:12px; border-radius:10px; text-align:center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
