@@ -68,12 +68,39 @@ public class RegisterServlet extends HttpServlet {
 
                         // 获取头像参数，如果没有则使用默认值
                         if (json.has("avatar") && !json.get("avatar").isJsonNull()) {
-                            String avatarName = json.get("avatar").getAsString();
-                            // 如果前端只传了文件名，添加完整路径
-                            if (!avatarName.startsWith("C:")) {
-                                avatar = LOCAL_ASSETS_PATH + avatarName;
+                            String avatarValue = json.get("avatar").getAsString();
+
+                            // 添加调试信息
+                            System.out.println("接收到头像参数: " + avatarValue);
+
+                            // 移除路径前缀，只保留文件名
+                            String avatarFileName;
+                            if (avatarValue.contains("/")) {
+                                avatarFileName = avatarValue.substring(avatarValue.lastIndexOf("/") + 1);
+                            } else if (avatarValue.contains("\\")) {
+                                // 处理Windows路径
+                                avatarFileName = avatarValue.substring(avatarValue.lastIndexOf("\\") + 1);
                             } else {
-                                avatar = avatarName;
+                                avatarFileName = avatarValue;
+                            }
+
+                            System.out.println("提取的文件名: " + avatarFileName);
+
+                            // 验证是否是有效的头像文件名
+                            String[] validFileNames = {"txone.jpg", "txtwo.jpg", "txthree.jpg"};
+                            boolean isValid = false;
+                            for (String validName : validFileNames) {
+                                if (validName.equals(avatarFileName)) {
+                                    isValid = true;
+                                    avatar = LOCAL_ASSETS_PATH + avatarFileName;  // 使用完整路径
+                                    System.out.println("头像有效，使用: " + avatar);
+                                    break;
+                                }
+                            }
+
+                            if (!isValid) {
+                                System.out.println("无效的头像文件名，使用默认头像: " + avatarFileName);
+                                avatar = LOCAL_ASSETS_PATH + DEFAULT_AVATAR;
                             }
                         }
                     }
@@ -104,7 +131,8 @@ public class RegisterServlet extends HttpServlet {
             name = name.trim();
             password = password.trim();
 
-            // 验证本地头像文件是否存在
+            // ========== 修改开始：移除文件存在检查，只验证路径格式 ==========
+            // 验证头像路径格式
             String[] validAvatars = {
                     LOCAL_ASSETS_PATH + "txone.jpg",
                     LOCAL_ASSETS_PATH + "txtwo.jpg",
@@ -114,21 +142,18 @@ public class RegisterServlet extends HttpServlet {
             boolean validAvatar = false;
             for (String valid : validAvatars) {
                 if (valid.equals(avatar)) {
-                    File avatarFile = new File(avatar);
-                    if (avatarFile.exists()) {
-                        validAvatar = true;
-                        break;
-                    } else {
-                        System.err.println("头像文件不存在: " + avatar);
-                    }
+                    validAvatar = true;
+                    System.out.println("头像路径验证通过: " + avatar);
+                    break;
                 }
             }
 
             if (!validAvatar) {
                 // 如果头像无效，使用第一张作为默认
                 avatar = LOCAL_ASSETS_PATH + DEFAULT_AVATAR;
-                System.out.println("使用默认头像: " + avatar);
+                System.out.println("头像路径无效，使用默认头像: " + avatar);
             }
+            // ========== 修改结束 ==========
 
             // 验证输入
             if (account.length() < 3 || account.length() > 20) {
@@ -213,9 +238,19 @@ public class RegisterServlet extends HttpServlet {
                     data.addProperty("account", account);
                     data.addProperty("name", name);
 
+                    // ========== 修改开始：修复文件名提取逻辑 ==========
                     // 返回给前端的是文件名（不含路径）
-                    String avatarFileName = avatar.substring(avatar.lastIndexOf("\\") + 1);
+                    String avatarFileName;
+                    if (avatar.contains("/")) {
+                        avatarFileName = avatar.substring(avatar.lastIndexOf("/") + 1);
+                    } else if (avatar.contains("\\")) {
+                        avatarFileName = avatar.substring(avatar.lastIndexOf("\\") + 1);
+                    } else {
+                        avatarFileName = avatar;
+                    }
+                    System.out.println("返回给前端的头像文件名: " + avatarFileName);
                     data.addProperty("avatar", avatarFileName);
+                    // ========== 修改结束 ==========
 
                     data.addProperty("coins", 1000);
 
