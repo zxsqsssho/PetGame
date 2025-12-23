@@ -1,118 +1,87 @@
-<!-- code/src/views/Dex.vue -->
+<!-- Dex.vue -->
 <template>
   <div class="page-wrap">
-    <div class="page-header">
-      <button class="back-button" @click="goHome">←</button>
-      <div class="page-title">图鉴</div>
-    </div>
-
-    <div class="stats-card" v-if="stats">
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.collected }}</div>
-        <div class="stat-label">已收集</div>
+    <div class="page-title">宠物图鉴</div>
+    <div class="dex-section">
+      <div class="section-title">
+        宠物图鉴（{{ petsCollectedCount }}/{{ totalPetsCount }}）
       </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.total }}</div>
-        <div class="stat-label">总数</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.percentage }}%</div>
-        <div class="stat-label">完成度</div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div v-for="entry in pokedex" :key="entry.id" class="dex-card">
-        <div class="dex-icon">{{ entry.icon || '🐾' }}</div>
-        <div class="dex-name">{{ entry.name }}</div>
-        <div class="dex-rarity" :class="'rarity-' + entry.rarity">稀有度: {{ entry.rarity }}</div>
-        <div v-if="!entry.collected" class="locked">未收集</div>
-        <div v-else class="collected">✓ 已收集</div>
+      <div class="grid">
+        <div v-for="entry in pokedex" :key="entry.id" class="dex-card">
+          <div class="dex-icon">{{ entry.icon }}</div>
+          <div class="dex-name">{{ entry.name }}</div>
+          <div class="dex-rarity">{{ getRarityName(entry.rarity) }}</div>
+          <div class="dex-desc">{{ entry.description }}</div>
+          <div v-if="!entry.collected" class="locked">未收集</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { api } from "@/api/index.js"
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { api } from '@/api/index.js'
 
-const router = useRouter()
 const pokedex = ref([])
-const stats = ref(null)
+const totalPetsCount = ref(0)
 
 onMounted(async () => {
   try {
-    const dexRes = await api.getDex()
-    if (dexRes.code === 0) {
-      pokedex.value = dexRes.data
+    const petRes = await api.getDexPets()
+    if (petRes.code === 0) {
+      pokedex.value = petRes.data
+      totalPetsCount.value = petRes.data.length
+    } else {
+      console.error('加载宠物图鉴失败', petRes.msg)
     }
-
-    // 获取统计（假设后端有 /api/dex/stats）
-    const statsRes = await api.instance.get("/dex/stats")
-    if (statsRes.data.code === 0) {
-      stats.value = statsRes.data.data
-    }
-  } catch (error) {
-    console.error('获取图鉴数据失败:', error)
-    alert('加载图鉴失败，请稍后重试')
+  } catch (e) {
+    console.error('加载图鉴失败', e)
   }
 })
 
-const goHome = () => router.push('/home')
+const petsCollectedCount = computed(() =>
+    pokedex.value.filter(p => p.collected).length
+)
+
+const getRarityName = (rarity) => {
+  switch (rarity) {
+    case 1: return '普通'
+    case 2: return '稀有'
+    case 3: return '史诗'
+    default: return '未知'
+  }
+}
 </script>
 
 <style scoped>
 .page-wrap {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 40px auto;
   padding: 0 20px;
-}
-.page-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.back-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  margin-right: 12px;
-  color: #4ecdc4;
 }
 .page-title {
   font-size: 28px;
   font-weight: 700;
+  margin-bottom: 24px;
   text-align: center;
-  flex: 1;
 }
-.stats-card {
-  display: flex;
-  justify-content: space-around;
+.dex-section {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-  margin-bottom: 20px;
 }
-.stat-item {
-  text-align: center;
-}
-.stat-number {
-  font-size: 28px;
-  font-weight: bold;
-  color: #4ecdc4;
-}
-.stat-label {
-  font-size: 14px;
-  color: #777;
-  margin-top: 5px;
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 18px;
 }
 .dex-card {
@@ -120,32 +89,55 @@ const goHome = () => router.push('/home')
   padding: 12px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.dex-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 .dex-icon {
-  font-size: 36px;
-  margin-bottom: 8px;
+  font-size: 32px;
+  margin-bottom: 6px;
 }
 .dex-name {
-  font-weight: 700;
-  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
 }
 .dex-rarity {
   font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
-  margin-bottom: 5px;
+  color: #666;
+  margin-bottom: 4px;
 }
-.rarity-1 { background: #d0f0ff; color: #0077b6; }
-.rarity-2 { background: #ffeaa7; color: #fdcb6e; }
-.rarity-3 { background: #fab1a0; color: #e17055; }
-.locked { color: #bbb; margin-top: 6px; font-size: 12px; }
-.collected { color: #4ecdc4; margin-top: 6px; font-size: 12px; }
+.dex-desc {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+.locked {
+  color: #aaa;
+  font-size: 11px;
+  margin-top: 2px;
+}
 
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
 @media (max-width: 768px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-card { flex-direction: column; gap: 15px; }
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .page-wrap {
+    margin: 20px auto;
+    padding: 0 10px;
+  }
 }
 </style>

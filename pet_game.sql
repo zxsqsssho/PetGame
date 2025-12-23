@@ -312,3 +312,4 @@ CREATE TABLE `users`  (
 INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 9083, '2025-12-06 23:10:34', '2025-12-22 20:10:14');
 
 SET FOREIGN_KEY_CHECKS = 1;
+

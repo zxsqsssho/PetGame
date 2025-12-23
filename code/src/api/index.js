@@ -1,4 +1,4 @@
-// code/src/api/index.js
+// code/src/api/index.js - 更新API函数
 import axios from "axios";
 
 // 让 axios 自动携带 Cookie（用于 Session 登录）
@@ -15,7 +15,7 @@ export const api = {
     // 探索
     explore: (locationId) =>
         instance.post("/explore", { locationId }).then(r => r.data),
-
+    getExploreLocations: () => instance.get("/explore/locations").then(r => r.data),
     // 抽奖
     drawNormal: () =>
         instance.post("/draw/normal").then(r => r.data),
@@ -24,16 +24,13 @@ export const api = {
         instance.post("/draw/advanced").then(r => r.data),
 
     // 图鉴
-    getDex: () =>
-        instance.get("/dex/list").then(r => r.data),
-
+    getDexPets: () => instance.get("/dex/pets").then(r => r.data),
     // 宠物
     getPets: () =>
         instance.get("/pets/list").then(r => r.data),
 
-    feedPet: (petId) =>
-        instance.post("/pets/feed", { petId }).then(r => r.data),
-
+    carryPet: (petId, carry) => instance.post("/pets/carry", { petId, carry }).then(r => r.data),
+    feedPet: (petId, foodType) => instance.post("/pets/feed", { petId, foodType }).then(r => r.data),
     // 商店
     getShopItems: () =>
         instance.get("/shop/items").then(r => r.data),
@@ -45,8 +42,8 @@ export const api = {
     login: (username, password) =>
         instance.post("/user/login", { username, password }).then(r => r.data),
 
-    register: (username, password) =>
-        instance.post("/user/register", { username, password }).then(r => r.data),
+    register: (username, name, password, avatar) =>
+        instance.post("/user/register", { username, name, password, avatar }).then(r => r.data),
 
     getUserInfo: () =>
         instance.get("/user/info").then(r => r.data),

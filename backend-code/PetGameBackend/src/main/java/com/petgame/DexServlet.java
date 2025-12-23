@@ -19,23 +19,33 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet(urlPatterns={"/api/dex/list", "/api/dex/stats"})
+@WebServlet(urlPatterns={"/api/dex/list", "/api/dex/stats", "/api/dex/pets"})
 public class DexServlet extends HttpServlet {
     private Gson gson = new Gson();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String path = req.getServletPath();
+        System.out.println("DexServlet GET path: " + path); // 调试信息
 
         if ("/api/dex/stats".equals(path)) {
             // 获取图鉴统计信息
             getDexStats(req, resp);
+        } else if ("/api/dex/pets".equals(path)) {
+            // 获取宠物图鉴
+            getDexPets(req, resp);
+
         } else {
-            // 获取图鉴收集状态
+            // 兼容旧的list接口
             getDexList(req, resp);
         }
     }
 
     private void getDexList(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        getDexPets(req, resp);
+    }
+
+    private void getDexPets(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         HttpSession session = req.getSession(false);
@@ -49,20 +59,23 @@ public class DexServlet extends HttpServlet {
         }
         int userId = (int) session.getAttribute("userId");
         try (Connection conn = DB.getConn()) {
-            String sql = "SELECT pb.id, pb.name, pb.icon, pb.rarity, " +
-                    "CASE WHEN up.id IS NULL THEN 0 ELSE 1 END AS collected " +
-                    "FROM pets_base pb LEFT JOIN user_pets up " +
-                    "ON pb.id = up.pet_id AND up.user_id = ?";
+            String sql = "SELECT pb.id, pb.name, pb.icon, pb.rarity, pb.description, " +
+                    "MAX(CASE WHEN up.id IS NOT NULL THEN 1 ELSE 0 END) AS collected " +
+                    "FROM pets_base pb " +
+                    "LEFT JOIN user_pets up ON pb.id = up.pet_id AND up.user_id = ? " +
+                    "GROUP BY pb.id, pb.name, pb.icon, pb.rarity, pb.description";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             JsonArray arr = new JsonArray();
+            int debugCount = 0;
             while (rs.next()) {
                 JsonObject e = new JsonObject();
                 e.addProperty("id", rs.getInt("id"));
                 e.addProperty("name", rs.getString("name"));
-                e.addProperty("icon", rs.getString("icon"));
+                e.addProperty("icon", rs.getString("icon") != null ? rs.getString("icon") : "🐾");
                 e.addProperty("rarity", rs.getInt("rarity"));
+                e.addProperty("description", rs.getString("description"));
                 e.addProperty("collected", rs.getInt("collected") == 1);
                 arr.add(e);
             }
@@ -81,6 +94,7 @@ public class DexServlet extends HttpServlet {
             out.print(err);
         }
     }
+
 
     private void getDexStats(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // 获取图鉴统计信息
