@@ -6,3 +6,32 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+# Editor-based REST client requests
+/restClient/
+# Gradle
+.gradle
+build/
+out/
+.idea/workspace.xml
+.idea/dataSources.local.xml
+.idea/dataSources.xml
+.idea/libraries/
+.idea/compiler.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/contentModel.xml
+.idea/misc.xml
+# Editor-based JetBrains plugins
+*.iml
+# IntelliJ
+*.ipr
+*.iws
+*.jsp
+# IDE-specific
+.idea/
+.vscode/
+.project/
+.classpath
+# macOS
+.DS_Store
+.gitignore

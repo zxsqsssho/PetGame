@@ -19,12 +19,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet("/api/dex/list")
+@WebServlet(urlPatterns={"/api/dex/list", "/api/dex/stats"})
 public class DexServlet extends HttpServlet {
     private Gson gson = new Gson();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // 获取图鉴收集状态
+        String path = req.getServletPath();
+
+        if ("/api/dex/stats".equals(path)) {
+            // 获取图鉴统计信息
+            getDexStats(req, resp);
+        } else {
+            // 获取图鉴收集状态
+            getDexList(req, resp);
+        }
+    }
+
+    private void getDexList(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         HttpSession session = req.getSession(false);
@@ -38,7 +49,7 @@ public class DexServlet extends HttpServlet {
         }
         int userId = (int) session.getAttribute("userId");
         try (Connection conn = DB.getConn()) {
-            String sql = "SELECT pb.id, pb.name, pb.icon, " +
+            String sql = "SELECT pb.id, pb.name, pb.icon, pb.rarity, " +
                     "CASE WHEN up.id IS NULL THEN 0 ELSE 1 END AS collected " +
                     "FROM pets_base pb LEFT JOIN user_pets up " +
                     "ON pb.id = up.pet_id AND up.user_id = ?";
@@ -51,12 +62,59 @@ public class DexServlet extends HttpServlet {
                 e.addProperty("id", rs.getInt("id"));
                 e.addProperty("name", rs.getString("name"));
                 e.addProperty("icon", rs.getString("icon"));
+                e.addProperty("rarity", rs.getInt("rarity"));
                 e.addProperty("collected", rs.getInt("collected") == 1);
                 arr.add(e);
             }
             res.addProperty("code", 0);
             res.addProperty("msg", "success");
             res.add("data", arr);
+            out.print(gson.toJson(res));
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            JsonObject err = new JsonObject();
+            err.addProperty("code", 500);
+            err.addProperty("msg", "服务器异常: " + e.getMessage());
+            err.add("data", null);
+
+            out.print(err);
+        }
+    }
+
+    private void getDexStats(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // 获取图鉴统计信息
+        resp.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = resp.getWriter();
+        HttpSession session = req.getSession(false);
+        JsonObject res = new JsonObject();
+        if (session == null || session.getAttribute("userId")==null) {
+            res.addProperty("code", 4);
+            res.addProperty("msg", "未登录");
+            res.add("data", null);
+            out.print(gson.toJson(res));
+            return;
+        }
+        int userId = (int) session.getAttribute("userId");
+        try (Connection conn = DB.getConn()) {
+            // 查询总宠物数和已收集数
+            String sql = "SELECT " +
+                    "(SELECT COUNT(*) FROM pets_base) AS total_pets, " +
+                    "(SELECT COUNT(*) FROM user_pets up JOIN pets_base pb ON up.pet_id = pb.id WHERE up.user_id = ?) AS collected_pets";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            JsonObject data = new JsonObject();
+            if (rs.next()) {
+                data.addProperty("total", rs.getInt("total_pets"));
+                data.addProperty("collected", rs.getInt("collected_pets"));
+                data.addProperty("percentage", Math.round((rs.getInt("collected_pets") * 100.0) / rs.getInt("total_pets")));
+            }
+
+            res.addProperty("code", 0);
+            res.addProperty("msg", "success");
+            res.add("data", data);
             out.print(gson.toJson(res));
         } catch (Exception e) {
             e.printStackTrace();

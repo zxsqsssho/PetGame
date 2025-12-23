@@ -37,7 +37,7 @@ public class PetServlet extends HttpServlet {
         int userId = (int) session.getAttribute("userId");
         try (Connection conn = DB.getConn()) {
             // 联合 pets_base 查询宠物信息
-            String sql = "SELECT up.id AS upid, up.pet_id, up.nickname, up.level AS petLevel, pb.name, pb.rarity, pb.icon " +
+            String sql = "SELECT up.id AS upid, up.pet_id, up.nickname, pb.name, pb.rarity, pb.icon " +
                     "FROM user_pets up JOIN pets_base pb ON up.pet_id=pb.id WHERE up.user_id=?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -48,7 +48,6 @@ public class PetServlet extends HttpServlet {
                 pet.addProperty("id", rs.getInt("upid"));           // 用户宠物记录ID
                 pet.addProperty("petId", rs.getInt("pet_id"));     // 宠物图鉴ID
                 pet.addProperty("name", rs.getString("name"));
-                pet.addProperty("level", rs.getInt("petLevel"));
                 pet.addProperty("rarity", rs.getInt("rarity"));
                 pet.addProperty("icon", rs.getString("icon"));
                 String nick = rs.getString("nickname");

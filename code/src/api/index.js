@@ -41,13 +41,6 @@ export const api = {
     buyItem: (itemId, quantity = 1) =>
         instance.post("/shop/buy", { itemId, quantity }).then(r => r.data),
 
-    // 任务
-    getTasks: () =>
-        instance.get("/tasks/list").then(r => r.data),
-
-    claimTask: (taskId) =>
-        instance.post("/tasks/claim", { taskId }).then(r => r.data),
-
     // 用户系统
     login: (username, password) =>
         instance.post("/user/login", { username, password }).then(r => r.data),

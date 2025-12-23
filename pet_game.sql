@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `explore_rewards`;
 CREATE TABLE `explore_rewards`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '奖励ID',
   `location_id` int(11) NOT NULL COMMENT '对应地点ID',
-  `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励类型：coin/pet/item',
-  `item_id` int(11) NULL DEFAULT NULL COMMENT '物品或宠物ID',
-  `amount` int(11) NULL DEFAULT 1 COMMENT '数量（金币/道具数量）',
+  `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励类型：coin/pet/food',
+  `item_id` int(11) NULL DEFAULT NULL COMMENT '食物或宠物ID',
+  `amount` int(11) NULL DEFAULT 1 COMMENT '数量（金币/食物数量）',
   `weight` int(11) NULL DEFAULT 1 COMMENT '概率权重（数字越大概率越高）',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `location_id`(`location_id`) USING BTREE,

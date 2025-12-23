@@ -43,10 +43,6 @@
         <div class="menu-text">商店</div>
       </div>
 
-      <div class="menu-card" @click="goTasks">
-        <div class="menu-icon">📜</div>
-        <div class="menu-text">任务</div>
-      </div>
 
       <div class="menu-card" @click="goDex">
         <div class="menu-icon">📘</div>

@@ -13,6 +13,7 @@ dist
 dist-ssr
 coverage
 *.local
+.gitignore
 
 # Editor directories and files
 .vscode/*
@@ -23,6 +24,11 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+*.dbmdl
+*.dbproj
+*.db
+*.ecproj
+*.xml
 
 *.tsbuildinfo
 
@@ -34,3 +40,35 @@ coverage
 
 # Vitest
 __screenshots__/
+
+# Folders for different package managers
+/node_modules
+/yarn.lock
+/pnpm-lock.yaml
+/package-lock.json
+/bower_components
+/jspm_packages
+/.meteor
+/.nuxt
+/.next
+/.nuxt2
+/.fusebox
+/.dnu
+/.yarn
+/.yarn.lock
+/.yarn-cache
+/.yarn-integrity
+/.pnp.cjs
+/.pnp.loader.json
+/.pnp.data.json
+/.pnp.js
+/.pnp.lock.yaml
+
+/petgame.iml
+/.idea
+/.env.development.local
+/.env.test.local
+/.env.production.local
+
+/.env
+/.env.local
