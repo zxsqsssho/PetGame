@@ -1,7 +1,3 @@
-// 文件：code/src/java/com/petgame/ItemServlet.java
-// 背包模块作用：对应 /api/items/list（GET），返回当前玩家拥有的所有道具。
-//            后台根据登录用户 ID 查询 user_items 并关联 shop_items 获取名称等信息，返回列表。
-//            示例返回字段包含道具 ID、名称、数量、描述等。
 package com.petgame;
 
 import com.google.gson.Gson;
@@ -26,13 +22,16 @@ import java.sql.SQLException;
 @WebServlet(urlPatterns={"/api/items/list","/api/items/sale"})
 public class ItemServlet extends HttpServlet {
     private Gson gson = new Gson();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // 获取玩家背包中道具列表
+        // 获取玩家背包中道具列表（包含商店道具+探索道具）
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         HttpSession session = req.getSession(false);
         JsonObject res = new JsonObject();
+
+        // 登录校验
         if (session == null || session.getAttribute("userId")==null) {
             res.addProperty("code", 4);
             res.addProperty("msg", "未登录");
@@ -43,43 +42,63 @@ public class ItemServlet extends HttpServlet {
         int userId = (int) session.getAttribute("userId");
 
         try (Connection conn = DB.getConn()) {
-            String sql = "SELECT ui.item_id, si.name, si.icon, ui.amount " +
-                    "FROM user_items ui JOIN shop_items si ON ui.item_id=si.id " +
+            // 核心修改：LEFT JOIN保留所有用户道具，关联food_base补充探索食物信息
+            String sql = "SELECT ui.item_id, " +
+                    "IFNULL(si.name, fb.name) AS name, " +  // 优先取商店名称，无则取食物图鉴名称
+                    "IFNULL(si.icon, CONCAT('/food/', fb.name, '.png')) AS icon, " + // 兜底图标路径
+                    "ui.amount, " +
+                    "IFNULL(si.price, 0) AS price, " + // 非商店道具价格为0（出售时用）
+                    "fb.description AS description " + // 补充道具描述
+                    "FROM user_items ui " +
+                    "LEFT JOIN shop_items si ON ui.item_id = si.id " + // 左连接商店表
+                    "LEFT JOIN food_base fb ON ui.item_id = fb.id " + // 左连接食物图鉴表（探索道具主要来源）
                     "WHERE ui.user_id=?";
+
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
+
             JsonArray arr = new JsonArray();
             while (rs.next()) {
                 JsonObject it = new JsonObject();
                 it.addProperty("itemId", rs.getInt("item_id"));
-                it.addProperty("name", rs.getString("name"));
-                it.addProperty("icon", rs.getString("icon"));
+                // 处理名称：若商店/食物表都无，显示默认名称
+                String name = rs.getString("name") == null ? "未知道具" : rs.getString("name");
+                it.addProperty("name", name);
+                // 处理图标：若为空，显示默认图标
+                String icon = rs.getString("icon") == null ? "/food/default.png" : rs.getString("icon");
+                it.addProperty("icon", icon);
                 it.addProperty("amount", rs.getInt("amount"));
+                // 新增：补充价格（出售时用）和描述
+                it.addProperty("price", rs.getInt("price"));
+                String desc = rs.getString("description") == null ? "无描述" : rs.getString("description");
+                it.addProperty("description", desc);
                 arr.add(it);
             }
+
             res.addProperty("code", 0);
             res.addProperty("msg", "success");
             res.add("data", arr);
             out.print(gson.toJson(res));
+
         } catch (Exception e) {
             e.printStackTrace();
-
             JsonObject err = new JsonObject();
             err.addProperty("code", 500);
             err.addProperty("msg", "服务器异常: " + e.getMessage());
             err.add("data", null);
-
-            out.print(err);
+            out.print(gson.toJson(err)); // 修复：原代码此处漏了gson.toJson，导致返回原生JsonObject字符串格式错误
         }
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-        // 出售玩家背包中道具
+        // 出售玩家背包中道具（兼容探索道具：非商店道具价格为0时提示无法出售）
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         HttpSession session = req.getSession(false);
         JsonObject res = new JsonObject();
+
+        // 登录校验
         if (session == null || session.getAttribute("userId")==null) {
             res.addProperty("code", 4);
             res.addProperty("msg", "未登录");
@@ -91,8 +110,8 @@ public class ItemServlet extends HttpServlet {
 
         try {
             JsonObject jsonReq = gson.fromJson(new BufferedReader(new InputStreamReader(req.getInputStream())), JsonObject.class);
-            int itemId = jsonReq.get("itemId").getAsInt();//出售的道具ID
-            int saleAmount = jsonReq.get("saleAmount").getAsInt();//出售的道具数量
+            int itemId = jsonReq.get("itemId").getAsInt();
+            int saleAmount = jsonReq.get("saleAmount").getAsInt();
 
             if (saleAmount <= 0) {
                 res.addProperty("code", 2);
@@ -103,14 +122,14 @@ public class ItemServlet extends HttpServlet {
             }
 
             try (Connection conn = DB.getConn()) {
-                // 开启事务
                 conn.setAutoCommit(false);
 
                 try {
-                    // 1. 查询用户是否有该物品，以及物品的价格
-                    String checkSql = "SELECT ui.amount, si.price " +
+                    // 核心修改：查询时左连接shop_items和food_base，兼容探索道具
+                    String checkSql = "SELECT ui.amount, IFNULL(si.price, 0) AS price " +
                             "FROM user_items ui " +
-                            "JOIN shop_items si ON ui.item_id = si.id " +
+                            "LEFT JOIN shop_items si ON ui.item_id = si.id " +
+                            "LEFT JOIN food_base fb ON ui.item_id = fb.id " +
                             "WHERE ui.user_id = ? AND ui.item_id = ?";
                     PreparedStatement checkPs = conn.prepareStatement(checkSql);
                     checkPs.setInt(1, userId);
@@ -120,13 +139,21 @@ public class ItemServlet extends HttpServlet {
                     if (!checkRs.next()) {
                         res.addProperty("code", 3);
                         res.addProperty("msg", "您没有该物品");
-                        res.add("data", null);
                         out.print(gson.toJson(res));
                         return;
                     }
 
                     int currentAmount = checkRs.getInt("amount");
                     int itemPrice = checkRs.getInt("price");
+
+                    // 新增：非商店道具（价格为0）无法出售
+                    if (itemPrice == 0) {
+                        res.addProperty("code", 6);
+                        res.addProperty("msg", "该道具为探索获得，无法出售");
+                        res.add("data", null);
+                        out.print(gson.toJson(res));
+                        return;
+                    }
 
                     if (currentAmount < saleAmount) {
                         res.addProperty("code", 5);
@@ -136,21 +163,18 @@ public class ItemServlet extends HttpServlet {
                         return;
                     }
 
-                    // 2. 计算出售价格（假设出售价格为购买价格的一半）
+                    // 计算出售价格（商店道具半价，探索道具已提前拦截）
                     int sellPrice = (int) (itemPrice * 0.5 * saleAmount);
 
-                    // 3. 更新用户物品数量
+                    // 更新用户物品数量
                     String updateSql;
                     PreparedStatement updatePs;
-
                     if (currentAmount == saleAmount) {
-                        // 如果全部出售，删除记录
                         updateSql = "DELETE FROM user_items WHERE user_id = ? AND item_id = ?";
                         updatePs = conn.prepareStatement(updateSql);
                         updatePs.setInt(1, userId);
                         updatePs.setInt(2, itemId);
                     } else {
-                        // 否则减少数量
                         updateSql = "UPDATE user_items SET amount = amount - ? WHERE user_id = ? AND item_id = ?";
                         updatePs = conn.prepareStatement(updateSql);
                         updatePs.setInt(1, saleAmount);
@@ -163,17 +187,17 @@ public class ItemServlet extends HttpServlet {
                         throw new SQLException("更新物品数量失败");
                     }
 
-                    // 4. 增加用户金币
+                    // 增加用户金币
                     String coinSql = "UPDATE users SET coins = coins + ? WHERE id = ?";
                     PreparedStatement coinPs = conn.prepareStatement(coinSql);
                     coinPs.setInt(1, sellPrice);
                     coinPs.setInt(2, userId);
                     coinPs.executeUpdate();
 
-                    // 5. 提交事务
+                    // 提交事务
                     conn.commit();
 
-                    // 6. 获取更新后的金币数量
+                    // 获取更新后的金币数量
                     String getCoinsSql = "SELECT coins FROM users WHERE id = ?";
                     PreparedStatement getCoinsPs = conn.prepareStatement(getCoinsSql);
                     getCoinsPs.setInt(1, userId);
@@ -183,7 +207,7 @@ public class ItemServlet extends HttpServlet {
                         newCoins = coinsRs.getInt("coins");
                     }
 
-                    // 7. 返回成功响应
+                    // 返回成功响应
                     JsonObject data = new JsonObject();
                     data.addProperty("sellPrice", sellPrice);
                     data.addProperty("newCoins", newCoins);
@@ -196,7 +220,6 @@ public class ItemServlet extends HttpServlet {
                     out.print(gson.toJson(res));
 
                 } catch (Exception e) {
-                    // 回滚事务
                     conn.rollback();
                     throw e;
                 }
