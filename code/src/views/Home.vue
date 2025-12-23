@@ -15,7 +15,7 @@
 
       <div class="user-right">
          <div v-if="user.coins < 10000" class="coins">🪙 {{ user.coins }}</div>
-        <div v-else-if="user.coins >= 10000&&user.coins <= 100000000" class="coins">🪙 {{ user.coins/10000 }}w</div>
+        <div v-else-if="user.coins >= 10000&&user.coins <= 100000000" class="coins">🪙 {{ (user.coins-user.coins%100)/10000 }}w+</div>
         <div v-else class="coins">🪙 10000w+</div>
       </div>
     </div>

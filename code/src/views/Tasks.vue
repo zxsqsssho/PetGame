@@ -1,24 +1,7 @@
 <!--code/src/views/Tasks.vue-->
 <template>
-<!--  <div class="nav">-->
-<!--&lt;!&ndash;    头像&ndash;&gt;-->
-<!--    <div class="nav-left">-->
-<!--      <img class="avatar" :src="user.avatar" alt="头像" />-->
-
-<!--      <div class="user-info">-->
-<!--        <div class="user-name">{{ user.name }}</div>-->
-<!--        <div class="user-coin">{{ user.coins }}</div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--&lt;!&ndash;    携带的宠物&ndash;&gt;-->
-<!--    <div class="nav-rigt">-->
-<!--      <img class="avatar" :src="pet.icon" alt="宠物图片" />-->
-<!--      <div class="user-info">-->
-<!--        <div class="user-name">{{ pet.name }}</div>-->
-<!--        <div class="user-name">{{ pet.fatigue }}</div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+  <!-- 使用用户信息卡片组件 -->
+  <UserInfoCard />
   <div class="page-wrap">
     <div class="page-title">背包</div>
 
@@ -47,8 +30,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { api } from '@/api/index.js'
+import {useRouter} from "vue-router";
+import UserInfoCard from '@/components/UserInfoCard.vue'
+
+const router = useRouter()
+
+const user = ref({
+  name: "",
+  avatar:"",
+  coins: 0,
+})
+
+
+onMounted(async () => {
+  try {
+    const res = await api.getUserInfo()
+    console.log("user info =", res)
+
+    if (res && res.code === 0) {
+      user.value = res.data
+    } else {
+      alert(res?.msg || "登录状态异常，请重新登录")
+      router.push('/login')
+    }
+  } catch (e) {
+    console.error("getUserInfo error", e)
+    alert("服务器异常，请重新登录")
+    router.push('/login')
+  }
+})
 
 const bags = ref({
   icon:"",
@@ -69,9 +81,9 @@ onMounted(async () => {
 })
 const sale=(Id,name,acount)=>{
   sales.value.amount=acount,
-  sales.value.itemId=Id,
-  sales.value.salename=name,
-  sales.value.is_sale=true
+      sales.value.itemId=Id,
+      sales.value.salename=name,
+      sales.value.is_sale=true
 }
 const remove=()=>{
   sales.value.is_sale=false
@@ -91,30 +103,75 @@ const confirm=async ()=>{
     bags.value = bagsRes.data;
   }
 
-  // 如果有新的金币数量，可以更新用户信息
-  if (res.data && res.data.newCoins) {
-    console.log('新金币数量:', res.data.newCoins);
-    // 这里可以触发更新用户信息的逻辑
-  }
   alert(res.msg)
 }
 </script>
 
 
 <style scoped>
-.page-wrap { max-width:1100px; margin:40px auto; padding:0 20px; }
-.page-title { font-size:28px; font-weight:700; margin-bottom:18px; }
+.page-wrap {
+  max-width: 1100px;
+  margin: 80px auto 0;
+  padding: 0 20px;
+  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */
+  padding: 20px;
+}
 
-.bag-list { display:grid; grid-template-columns: repeat(3,1fr); gap:20px; }
-.bag-card { background:#fff; padding:16px; border-radius:12px; text-align:center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
-.bag-icon { font-size:36px; margin-bottom:8px; }
-.bag-name { font-weight:700; margin-bottom:6px; }
-.bag-amount { color:#888; margin-bottom:8px; }
-.bag-card button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer;width: 75px;font-size: 16px;}
-.sale-popup{
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.bag-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.bag-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.bag-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.bag-name {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.bag-amount {
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.bag-card button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 75px;
+  font-size: 16px;
+  background: #4CAF50;
+  color: white;
+  transition: background 0.2s;
+}
+
+.bag-card button:hover {
+  background: #45a049;
+}
+
+.sale-popup {
   position: fixed;
   background: #ffd2b6;
-  border-radius:8px;
+  border-radius: 8px;
   font-size: 22px;
   width: 36%;
   height: 36%;
@@ -125,22 +182,53 @@ const confirm=async ()=>{
   justify-content: space-evenly;
   align-items: center;
   border-color: black;
-  border-width:1px;
+  border-width: 1px;
   border-style: solid;
+  z-index: 1000;
 }
-.sale-name{
+
+.sale-name {
   font-size: 24px;
 }
-.sale-number span{
+
+.sale-number span {
   margin-right: 20px;
 }
-.sale-number input{
+
+.sale-number input {
   width: 100px;
   font-size: 20px;
   text-align: center;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
-.sale-popup button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer;width: 150px;font-size: 22px;}
-.sale-confirm{
+
+.sale-popup button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+  font-size: 22px;
+}
+
+.sale-remove {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.sale-confirm {
   margin-left: 10px;
+  background: #ff6b6b;
+  color: white;
+}
+
+.sale-remove:hover {
+  background: #e0e0e0;
+}
+
+.sale-confirm:hover {
+  background: #ff5252;
 }
 </style>

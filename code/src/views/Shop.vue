@@ -1,5 +1,7 @@
 <!--code/src/views/Shop.vue-->
 <template>
+  <!-- 使用用户信息卡片组件 -->
+  <UserInfoCard />
   <div class="page-wrap">
     <div class="page-title">商店</div>
 
@@ -28,6 +30,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@/api/index.js'
+import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const items = ref([])
 
@@ -58,7 +61,7 @@ const buy = async (item) => {
 
 <style scoped>
 /* 原有样式不变，补充空数据提示和图片样式 */
-.page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px; margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */padding: 20px;}
 .page-title { font-size: 28px; font-weight: 700; margin-bottom: 18px; }
 
 .grid { display:grid; grid-template-columns: repeat(3,1fr); gap:20px; }
