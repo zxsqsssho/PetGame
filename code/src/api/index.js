@@ -57,4 +57,10 @@ export const api = {
 
     getUserInfo: () =>
         instance.get("/user/info").then(r => r.data),
+    //背包
+    getBags:()=>
+        instance.get("/items/list").then(r=>r.data),
+
+    saleItem:(itemId,saleAmount)=>
+        instance.post("/items/sale",{itemId,saleAmount}).then(r=>r.data),
 };

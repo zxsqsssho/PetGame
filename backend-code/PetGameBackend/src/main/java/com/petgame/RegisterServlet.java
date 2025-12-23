@@ -15,7 +15,7 @@ public class RegisterServlet extends HttpServlet {
     private Gson gson = new Gson();
 
     // 本地头像路径
-    private static final String LOCAL_ASSETS_PATH = "../asset/";
+    private static final String LOCAL_ASSETS_PATH = "/avatars/";
     private static final String DEFAULT_AVATAR = "txone.jpg";
 
     @Override

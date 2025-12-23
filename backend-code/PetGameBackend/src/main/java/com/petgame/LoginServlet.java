@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 @WebServlet("/api/user/login")
 public class LoginServlet extends HttpServlet {
     private Gson gson = new Gson();
-    private static final String LOCAL_ASSETS_PATH = "../assets/";
+    private static final String LOCAL_ASSETS_PATH = "/avatars/";
     private static final String DEFAULT_AVATAR = "txone.jpg";
 
     @Override

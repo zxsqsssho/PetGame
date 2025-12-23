@@ -1,14 +1,46 @@
 <!--code/src/views/Tasks.vue-->
 <template>
-  <div class="page-wrap">
-    <div class="page-title">任务</div>
+<!--  <div class="nav">-->
+<!--&lt;!&ndash;    头像&ndash;&gt;-->
+<!--    <div class="nav-left">-->
+<!--      <img class="avatar" :src="user.avatar" alt="头像" />-->
 
-    <div class="task-list">
-      <div v-for="t in tasks" :key="t.id" class="task-card">
-        <div class="task-title">{{ t.title }}</div>
-        <div class="task-desc">{{ t.desc }}</div>
-        <div class="task-progress">{{ t.progress }} / {{ t.target }}</div>
-        <div><button :disabled="t.progress < t.target" @click="claim(t)">{{ t.progress >= t.target ? '领取' : '进行中' }}</button></div>
+<!--      <div class="user-info">-->
+<!--        <div class="user-name">{{ user.name }}</div>-->
+<!--        <div class="user-coin">{{ user.coins }}</div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--&lt;!&ndash;    携带的宠物&ndash;&gt;-->
+<!--    <div class="nav-rigt">-->
+<!--      <img class="avatar" :src="pet.icon" alt="宠物图片" />-->
+<!--      <div class="user-info">-->
+<!--        <div class="user-name">{{ pet.name }}</div>-->
+<!--        <div class="user-name">{{ pet.fatigue }}</div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+  <div class="page-wrap">
+    <div class="page-title">背包</div>
+
+    <div class="bag-list">
+      <div v-for="b in bags" :key="b.itemId" class="bag-card">
+        <img class="bag-icon" :src=b.icon>
+        <div class="bag-name">{{ b.name }}</div>
+        <div class="bag-amount">数量:{{ b.amount }} </div>
+        <div><button @click="sale(b.itemId,b.name,b.amount)">出售</button></div>
+      </div>
+    </div>
+    <div class="sale-popup" v-if="sales.is_sale">
+      <div class="sale-name">
+        <span>{{sales.salename}}</span>
+      </div>
+      <div class="sale-number">
+        <span>出售的数量:</span>
+        <input type="number" v-model="sales.salenum" :min="1" :max="sales.amount" class="amount-input">
+      </div>
+      <div>
+        <button class="sale-remove" @click="remove">取消</button>
+        <button class="sale-confirm" @click="confirm">确认出售</button>
       </div>
     </div>
   </div>
@@ -18,18 +50,53 @@
 import { ref, onMounted } from 'vue'
 import { api } from '@/api/index.js'
 
-const tasks = ref([])
-
-onMounted(async () => {
-  const res = await api.getTasks()
-  tasks.value = res.data
+const bags = ref({
+  icon:"",
+  name:"",
+  itemId:0,
+  amount:0,
 })
-
-const claim = async (t) => {
-  const res = await api.claimTask(t.id)
-  if (res.code === 0) {
-    alert(`奖励：金币 ${res.data.coinsGained}, 经验 ${res.data.expGained}`)
+const sales=ref({
+  is_sale:false,
+  salename:"",
+  itemId:0,
+  amount:0,
+  salenum:1,
+})
+onMounted(async () => {
+  const res = await api.getBags()
+  bags.value = res.data
+})
+const sale=(Id,name,acount)=>{
+  sales.value.amount=acount,
+  sales.value.itemId=Id,
+  sales.value.salename=name,
+  sales.value.is_sale=true
+}
+const remove=()=>{
+  sales.value.is_sale=false
+  sales.value.salenum=1
+}
+const confirm=async ()=>{
+  if (sales.value.salenum < 1 || sales.value.salenum > sales.value.amount) {
+    alert('出售数量无效')
+    return
   }
+  const res = await api.saleItem(sales.value.itemId,sales.value.salenum)
+  sales.value.is_sale=false
+  sales.value.salenum=1
+  // 重新加载背包数据
+  const bagsRes = await api.getBags();
+  if (bagsRes && bagsRes.code === 0) {
+    bags.value = bagsRes.data;
+  }
+
+  // 如果有新的金币数量，可以更新用户信息
+  if (res.data && res.data.newCoins) {
+    console.log('新金币数量:', res.data.newCoins);
+    // 这里可以触发更新用户信息的逻辑
+  }
+  alert(res.msg)
 }
 </script>
 
@@ -38,10 +105,42 @@ const claim = async (t) => {
 .page-wrap { max-width:1100px; margin:40px auto; padding:0 20px; }
 .page-title { font-size:28px; font-weight:700; margin-bottom:18px; }
 
-.task-list { display:flex; flex-direction:column; gap:14px; }
-.task-card { background:#fff; padding:14px; border-radius:10px; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
-.task-title { font-weight:700; }
-.task-desc { color:#666; margin:8px 0; }
-.task-progress { color:#888; margin-bottom:8px; }
-.task-card button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer; }
+.bag-list { display:grid; grid-template-columns: repeat(3,1fr); gap:20px; }
+.bag-card { background:#fff; padding:16px; border-radius:12px; text-align:center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
+.bag-icon { font-size:36px; margin-bottom:8px; }
+.bag-name { font-weight:700; margin-bottom:6px; }
+.bag-amount { color:#888; margin-bottom:8px; }
+.bag-card button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer;width: 75px;font-size: 16px;}
+.sale-popup{
+  position: fixed;
+  background: #ffd2b6;
+  border-radius:8px;
+  font-size: 22px;
+  width: 36%;
+  height: 36%;
+  left: 32%;
+  top: 32%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border-color: black;
+  border-width:1px;
+  border-style: solid;
+}
+.sale-name{
+  font-size: 24px;
+}
+.sale-number span{
+  margin-right: 20px;
+}
+.sale-number input{
+  width: 100px;
+  font-size: 20px;
+  text-align: center;
+}
+.sale-popup button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer;width: 150px;font-size: 22px;}
+.sale-confirm{
+  margin-left: 10px;
+}
 </style>

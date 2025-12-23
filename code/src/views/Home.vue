@@ -4,19 +4,19 @@
 
     <!-- 页面标题 -->
     <div class="page-title">主页</div>
-
     <!-- 玩家信息栏 -->
     <div class="user-card">
       <div class="user-left">
-        <img class="avatar" src="../assets/avatar.jpg" alt="头像" />
-
+        <img class="avatar" :src="user.avatar"  alt="头像" />
         <div class="user-info">
           <div class="user-name">{{ user.name }}</div>
         </div>
       </div>
 
       <div class="user-right">
-        <div class="coins">🪙 {{ user.coins }}</div>
+         <div v-if="user.coins < 10000" class="coins">🪙 {{ user.coins }}</div>
+        <div v-else-if="user.coins >= 10000&&user.coins <= 100000000" class="coins">🪙 {{ user.coins/10000 }}w</div>
+        <div v-else class="coins">🪙 10000w+</div>
       </div>
     </div>
 
@@ -45,7 +45,7 @@
 
       <div class="menu-card" @click="goTasks">
         <div class="menu-icon">📜</div>
-        <div class="menu-text">任务</div>
+        <div class="menu-text">背包</div>
       </div>
 
       <div class="menu-card" @click="goDex">
@@ -67,6 +67,7 @@ const router = useRouter()
 
 const user = ref({
   name: "",
+  avatar:"",
   coins: 0,
 })
 
@@ -162,7 +163,7 @@ const goDex = () => router.push('/dex')
 .coins {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-top: 20px;
 }
 
 
