@@ -24,7 +24,7 @@
     <div class="menu-grid">
 
       <div class="menu-card" @click="goPets">
-        <div class="menu-icon">🏠</div>
+        <div class="menu-icon">🐾</div>
         <div class="menu-text">宠物</div>
       </div>
 
@@ -40,11 +40,11 @@
 
       <div class="menu-card" @click="goShop">
         <div class="menu-icon">🛒</div>
-        <div class="menu-text">商店</div>
+        <div class="menu-text">食物商店</div>
       </div>
 
       <div class="menu-card" @click="goTasks">
-        <div class="menu-icon">📜</div>
+        <div class="menu-icon">🎒</div>
         <div class="menu-text">背包</div>
       </div>
 

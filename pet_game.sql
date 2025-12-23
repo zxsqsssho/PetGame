@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 23/12/2025 22:05:46
+ Date: 24/12/2025 00:22:34
 */
 
 SET NAMES utf8mb4;
@@ -24,54 +24,27 @@ DROP TABLE IF EXISTS `explore_rewards`;
 CREATE TABLE `explore_rewards`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '奖励ID',
   `location_id` int(11) NOT NULL COMMENT '对应地点ID',
-  `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励类型：coin/pet/food',
-  `item_id` int(11) NULL DEFAULT NULL COMMENT '食物或宠物ID',
-  `amount` int(11) NULL DEFAULT 1 COMMENT '数量（金币/食物数量）',
+  `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '奖励类型：coin/pet/item',
+  `item_id` int(11) NULL DEFAULT NULL COMMENT '物品或宠物ID',
+  `amount` int(11) NULL DEFAULT 1 COMMENT '数量（金币/道具数量）',
   `weight` int(11) NULL DEFAULT 1 COMMENT '概率权重（数字越大概率越高）',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `location_id`(`location_id`) USING BTREE,
   CONSTRAINT `explore_rewards_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '探索掉落表（每个地点对应的奖励池）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '探索掉落表（每个地点对应的奖励池）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of explore_rewards
 -- ----------------------------
-INSERT INTO `explore_rewards` VALUES (1, 1, 'coin', NULL, 20, 30);
-INSERT INTO `explore_rewards` VALUES (2, 1, 'coin', NULL, 50, 15);
-INSERT INTO `explore_rewards` VALUES (3, 1, 'item', 1, 1, 10);
-INSERT INTO `explore_rewards` VALUES (4, 1, 'item', 2, 1, 10);
-INSERT INTO `explore_rewards` VALUES (5, 1, 'item', 3, 1, 10);
-INSERT INTO `explore_rewards` VALUES (6, 1, 'item', 4, 1, 10);
-INSERT INTO `explore_rewards` VALUES (7, 1, 'item', 5, 1, 10);
-INSERT INTO `explore_rewards` VALUES (8, 1, 'pet', 1, 1, 3);
-INSERT INTO `explore_rewards` VALUES (9, 1, 'pet', 2, 1, 3);
-INSERT INTO `explore_rewards` VALUES (10, 1, 'pet', 3, 1, 3);
-INSERT INTO `explore_rewards` VALUES (11, 1, 'pet', 4, 1, 3);
-INSERT INTO `explore_rewards` VALUES (12, 1, 'pet', 5, 1, 3);
-INSERT INTO `explore_rewards` VALUES (13, 2, 'coin', NULL, 80, 30);
-INSERT INTO `explore_rewards` VALUES (14, 2, 'coin', NULL, 150, 15);
-INSERT INTO `explore_rewards` VALUES (15, 2, 'item', 6, 1, 10);
-INSERT INTO `explore_rewards` VALUES (16, 2, 'item', 7, 1, 10);
-INSERT INTO `explore_rewards` VALUES (17, 2, 'item', 8, 1, 10);
-INSERT INTO `explore_rewards` VALUES (18, 2, 'item', 9, 1, 10);
-INSERT INTO `explore_rewards` VALUES (19, 2, 'item', 10, 1, 10);
-INSERT INTO `explore_rewards` VALUES (20, 2, 'pet', 6, 1, 3);
-INSERT INTO `explore_rewards` VALUES (21, 2, 'pet', 7, 1, 3);
-INSERT INTO `explore_rewards` VALUES (22, 2, 'pet', 8, 1, 3);
-INSERT INTO `explore_rewards` VALUES (23, 2, 'pet', 9, 1, 3);
-INSERT INTO `explore_rewards` VALUES (24, 2, 'pet', 10, 1, 3);
-INSERT INTO `explore_rewards` VALUES (25, 3, 'coin', NULL, 200, 30);
-INSERT INTO `explore_rewards` VALUES (26, 3, 'coin', NULL, 500, 15);
-INSERT INTO `explore_rewards` VALUES (27, 3, 'item', 11, 1, 10);
-INSERT INTO `explore_rewards` VALUES (28, 3, 'item', 12, 1, 10);
-INSERT INTO `explore_rewards` VALUES (29, 3, 'item', 13, 1, 10);
-INSERT INTO `explore_rewards` VALUES (30, 3, 'item', 14, 1, 10);
-INSERT INTO `explore_rewards` VALUES (31, 3, 'item', 15, 1, 10);
-INSERT INTO `explore_rewards` VALUES (32, 3, 'pet', 11, 1, 3);
-INSERT INTO `explore_rewards` VALUES (33, 3, 'pet', 12, 1, 3);
-INSERT INTO `explore_rewards` VALUES (34, 3, 'pet', 13, 1, 3);
-INSERT INTO `explore_rewards` VALUES (35, 3, 'pet', 14, 1, 3);
-INSERT INTO `explore_rewards` VALUES (36, 3, 'pet', 15, 1, 3);
+INSERT INTO `explore_rewards` VALUES (1, 1, 'coin', NULL, 50, 1);
+INSERT INTO `explore_rewards` VALUES (2, 1, 'item_range', 1, 1, 1);
+INSERT INTO `explore_rewards` VALUES (3, 1, 'pet_range', 1, 1, 1);
+INSERT INTO `explore_rewards` VALUES (4, 2, 'coin', NULL, 150, 1);
+INSERT INTO `explore_rewards` VALUES (5, 2, 'item_range', 6, 1, 1);
+INSERT INTO `explore_rewards` VALUES (6, 2, 'pet_range', 6, 1, 1);
+INSERT INTO `explore_rewards` VALUES (7, 3, 'coin', NULL, 500, 1);
+INSERT INTO `explore_rewards` VALUES (8, 3, 'item_range', 11, 1, 1);
+INSERT INTO `explore_rewards` VALUES (9, 3, 'pet_range', 11, 1, 1);
 
 -- ----------------------------
 -- Table structure for food_base
@@ -121,7 +94,7 @@ CREATE TABLE `gacha_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE,
   CONSTRAINT `gacha_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 53 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of gacha_logs
@@ -137,6 +110,16 @@ INSERT INTO `gacha_logs` VALUES (49, 3, 'normal', 'coin', 68, NULL, '2025-12-23 
 INSERT INTO `gacha_logs` VALUES (50, 3, 'normal', 'pet', 4, NULL, '2025-12-23 21:56:55', '松鼠', 'normal');
 INSERT INTO `gacha_logs` VALUES (51, 3, 'normal', 'food', 2, NULL, '2025-12-23 21:56:55', '骨头', 'normal');
 INSERT INTO `gacha_logs` VALUES (52, 3, 'normal', 'food', 2, NULL, '2025-12-23 21:56:55', '骨头', 'normal');
+INSERT INTO `gacha_logs` VALUES (53, 2, 'advanced', 'pet', 6, NULL, '2025-12-24 00:21:52', '蓝鳍鱼', 'normal');
+INSERT INTO `gacha_logs` VALUES (54, 2, 'advanced', 'coin', 428, NULL, '2025-12-24 00:21:52', '428 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (55, 2, 'advanced', 'food', 12, NULL, '2025-12-24 00:21:52', '灵魂碎片', 'normal');
+INSERT INTO `gacha_logs` VALUES (56, 2, 'advanced', 'pet', 9, NULL, '2025-12-24 00:21:52', '深湖妖鱼', 'normal');
+INSERT INTO `gacha_logs` VALUES (57, 2, 'advanced', 'coin', 528, NULL, '2025-12-24 00:21:52', '528 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (58, 2, 'advanced', 'food', 10, NULL, '2025-12-24 00:21:52', '荧光浮游生物', 'normal');
+INSERT INTO `gacha_logs` VALUES (59, 2, 'advanced', 'pet', 11, NULL, '2025-12-24 00:21:52', '石像守卫', 'normal');
+INSERT INTO `gacha_logs` VALUES (60, 2, 'advanced', 'coin', 383, NULL, '2025-12-24 00:21:52', '383 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (61, 2, 'advanced', 'coin', 598, NULL, '2025-12-24 00:21:52', '598 金币', 'normal');
+INSERT INTO `gacha_logs` VALUES (62, 2, 'advanced', 'food', 7, NULL, '2025-12-24 00:21:52', '电能饵', 'normal');
 
 -- ----------------------------
 -- Table structure for gacha_pool
@@ -160,7 +143,7 @@ CREATE TABLE `gacha_pool`  (
 INSERT INTO `gacha_pool` VALUES (1, 'normal', 'coin', 1, 200, 5, 'normal', '金币');
 INSERT INTO `gacha_pool` VALUES (2, 'normal', 'pet', 1, 5, 2, 'normal', '普通宠物');
 INSERT INTO `gacha_pool` VALUES (3, 'normal', 'food', 1, 5, 3, 'normal', '普通食物');
-INSERT INTO `gacha_pool` VALUES (4, 'advanced', 'coin', 100, 500, 4, 'normal', '金币');
+INSERT INTO `gacha_pool` VALUES (4, 'advanced', 'coin', 300, 1000, 4, 'normal', '金币');
 INSERT INTO `gacha_pool` VALUES (5, 'advanced', 'pet', 6, 10, 2, 'rare', '稀有宠物');
 INSERT INTO `gacha_pool` VALUES (6, 'advanced', 'food', 6, 10, 2, 'rare', '高级食物');
 INSERT INTO `gacha_pool` VALUES (7, 'advanced', 'pet', 11, 15, 1, 'epic', '史诗宠物');
@@ -256,9 +239,8 @@ CREATE TABLE `user_items`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE,
   INDEX `item_id`(`item_id`) USING BTREE,
-  CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `user_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `shop_items` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
+  CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 56 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_items
@@ -268,14 +250,6 @@ INSERT INTO `user_items` VALUES (2, 1, 3, 2);
 INSERT INTO `user_items` VALUES (3, 1, 2, 3);
 INSERT INTO `user_items` VALUES (4, 1, 5, 2);
 INSERT INTO `user_items` VALUES (5, 1, 4, 1);
-INSERT INTO `user_items` VALUES (6, 2, 1, 6);
-INSERT INTO `user_items` VALUES (7, 2, 6, 1);
-INSERT INTO `user_items` VALUES (8, 2, 3, 1);
-INSERT INTO `user_items` VALUES (10, 2, 3, 1);
-INSERT INTO `user_items` VALUES (11, 2, 2, 1);
-INSERT INTO `user_items` VALUES (12, 2, 1, 1);
-INSERT INTO `user_items` VALUES (13, 2, 3, 1);
-INSERT INTO `user_items` VALUES (14, 2, 2, 1);
 INSERT INTO `user_items` VALUES (15, 3, 1, 5);
 INSERT INTO `user_items` VALUES (16, 3, 6, 1);
 INSERT INTO `user_items` VALUES (17, 3, 4, 1);
@@ -284,6 +258,21 @@ INSERT INTO `user_items` VALUES (19, 3, 5, 1);
 INSERT INTO `user_items` VALUES (20, 3, 5, 1);
 INSERT INTO `user_items` VALUES (21, 3, 2, 1);
 INSERT INTO `user_items` VALUES (22, 3, 2, 1);
+INSERT INTO `user_items` VALUES (25, 2, 1, 6);
+INSERT INTO `user_items` VALUES (26, 2, 5, 2);
+INSERT INTO `user_items` VALUES (27, 2, 2, 1);
+INSERT INTO `user_items` VALUES (39, 2, 6, 31);
+INSERT INTO `user_items` VALUES (42, 2, 4, 2);
+INSERT INTO `user_items` VALUES (46, 2, 10, 3);
+INSERT INTO `user_items` VALUES (47, 2, 8, 3);
+INSERT INTO `user_items` VALUES (48, 2, 9, 3);
+INSERT INTO `user_items` VALUES (49, 2, 12, 1);
+INSERT INTO `user_items` VALUES (50, 2, 15, 1);
+INSERT INTO `user_items` VALUES (51, 2, 13, 1);
+INSERT INTO `user_items` VALUES (52, 2, 7, 1);
+INSERT INTO `user_items` VALUES (53, 2, 12, 1);
+INSERT INTO `user_items` VALUES (54, 2, 10, 1);
+INSERT INTO `user_items` VALUES (55, 2, 7, 1);
 
 -- ----------------------------
 -- Table structure for user_pets
@@ -303,7 +292,7 @@ CREATE TABLE `user_pets`  (
   INDEX `pet_id`(`pet_id`) USING BTREE,
   CONSTRAINT `user_pets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_pets_ibfk_2` FOREIGN KEY (`pet_id`) REFERENCES `pets_base` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家宠物表（记录玩家实际拥有的宠物）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_pets
@@ -324,6 +313,52 @@ INSERT INTO `user_pets` VALUES (13, 3, 5, NULL, '2025-12-23 21:42:55', 0, 10, 0)
 INSERT INTO `user_pets` VALUES (14, 3, 1, NULL, '2025-12-23 21:42:55', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (15, 3, 4, NULL, '2025-12-23 21:54:37', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (16, 3, 4, NULL, '2025-12-23 21:56:55', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (17, 1, 2, NULL, '2025-12-23 22:58:25', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (18, 2, 8, NULL, '2025-12-23 23:16:52', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (19, 2, 10, NULL, '2025-12-23 23:17:05', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (20, 2, 3, NULL, '2025-12-23 23:17:07', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (21, 2, 1, NULL, '2025-12-23 23:19:52', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (22, 2, 6, NULL, '2025-12-23 23:19:56', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (23, 2, 7, NULL, '2025-12-23 23:20:16', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (24, 2, 6, NULL, '2025-12-23 23:20:17', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (25, 2, 6, NULL, '2025-12-23 23:21:35', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (26, 2, 15, NULL, '2025-12-23 23:24:29', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (27, 2, 8, NULL, '2025-12-23 23:24:43', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (28, 2, 8, NULL, '2025-12-23 23:24:47', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (29, 2, 7, NULL, '2025-12-23 23:31:40', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (30, 2, 9, NULL, '2025-12-23 23:32:12', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (31, 2, 9, NULL, '2025-12-23 23:37:49', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (32, 2, 14, NULL, '2025-12-23 23:38:22', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (33, 2, 13, NULL, '2025-12-23 23:38:37', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (34, 2, 12, NULL, '2025-12-23 23:38:42', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (35, 2, 12, NULL, '2025-12-23 23:38:43', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (36, 2, 15, NULL, '2025-12-23 23:38:44', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (37, 2, 5, NULL, '2025-12-23 23:41:37', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (38, 2, 5, NULL, '2025-12-24 00:11:46', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (39, 2, 5, NULL, '2025-12-24 00:11:47', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (40, 2, 8, NULL, '2025-12-24 00:11:52', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (41, 2, 8, NULL, '2025-12-24 00:11:53', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (42, 2, 6, NULL, '2025-12-24 00:13:49', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (43, 2, 10, NULL, '2025-12-24 00:13:51', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (44, 2, 6, NULL, '2025-12-24 00:13:53', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (45, 2, 8, NULL, '2025-12-24 00:13:54', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (46, 2, 10, NULL, '2025-12-24 00:13:54', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (47, 2, 15, NULL, '2025-12-24 00:13:56', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (48, 2, 14, NULL, '2025-12-24 00:13:58', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (49, 2, 15, NULL, '2025-12-24 00:13:59', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (50, 2, 11, NULL, '2025-12-24 00:14:00', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (51, 2, 13, NULL, '2025-12-24 00:14:01', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (52, 2, 13, NULL, '2025-12-24 00:14:18', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (53, 2, 10, NULL, '2025-12-24 00:14:18', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (54, 2, 9, NULL, '2025-12-24 00:14:19', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (55, 2, 8, NULL, '2025-12-24 00:14:19', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (56, 2, 7, NULL, '2025-12-24 00:14:19', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (57, 2, 8, NULL, '2025-12-24 00:14:21', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (58, 2, 10, NULL, '2025-12-24 00:21:24', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (59, 2, 9, NULL, '2025-12-24 00:21:26', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (60, 2, 6, NULL, '2025-12-24 00:21:52', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (61, 2, 9, NULL, '2025-12-24 00:21:52', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (62, 2, 11, NULL, '2025-12-24 00:21:52', 0, 10, 0);
 
 -- ----------------------------
 -- Table structure for users

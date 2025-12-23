@@ -59,11 +59,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { onMounted, ref, reactive, onBeforeUnmount } from 'vue'
 import { api } from '@/api'
 import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const results = ref([])
+
+onMounted(() => {
+  // 锁死页面滚动
+  document.body.style.overflow = 'hidden'
+})
+
+onBeforeUnmount(() => {
+  // 恢复页面滚动
+  document.body.style.overflow = ''
+})
 
 const draw = async (type) => {
   try {
@@ -81,10 +91,20 @@ const draw = async (type) => {
     else if (d.rarity === 'rare') rarityText = '【稀有】'
     else rarityText = '【普通】'
 
+    // 展示抽奖结果
     results.value.unshift({
       rarity: d.rarity,
       text: `${rarityText} ${d.rewardName}`
     })
+
+    // ⭐ 抽奖成功 → 统一刷新金币
+    window.dispatchEvent(new Event('refresh-user-info'))
+    // 1. 添加对UserInfoCard组件的引用
+    const userInfoRef = ref(null)
+    // 刷新用户信息栏的金币数量
+    if (userInfoRef.value && userInfoRef.value.refreshUserInfo) {
+      await userInfoRef.value.refreshUserInfo()
+    }
 
     // ✅ 成功一定要 return
     return { ok: true }
@@ -124,7 +144,7 @@ const drawTen = async (type) => {
   max-width: 1100px;
   margin: 40px auto;
   padding: 0 20px;
-  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */
+  margin-top: 30px; /* 为固定定位的用户信息卡片留出空间 */
 }
 
 .page-title {

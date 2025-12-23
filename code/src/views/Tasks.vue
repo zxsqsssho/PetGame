@@ -1,7 +1,7 @@
 <!--code/src/views/Tasks.vue-->
 <template>
-  <!-- 使用用户信息卡片组件 -->
-  <UserInfoCard />
+  <!-- 使用用户信息卡片组件，并添加ref以便调用组件方法 -->
+  <UserInfoCard ref="userInfoRef" />
   <div class="page-wrap">
     <div class="page-title">背包</div>
 
@@ -30,91 +30,86 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { api } from '@/api/index.js'
 import {useRouter} from "vue-router";
 import UserInfoCard from '@/components/UserInfoCard.vue'
 
 const router = useRouter()
+const userInfoRef = ref(null) // 添加对UserInfoCard组件的引用
 
-const user = ref({
-  name: "",
-  avatar:"",
-  coins: 0,
+// 删除原来的user定义和onMounted中的获取用户信息逻辑
+// 因为UserInfoCard组件会自己处理
+
+const bags = ref([]) // 修改为数组，因为背包物品通常是多个
+const sales = ref({
+  is_sale: false,
+  salename: "",
+  itemId: 0,
+  amount: 0,
+  salenum: 1,
 })
 
-
 onMounted(async () => {
-  try {
-    const res = await api.getUserInfo()
-    console.log("user info =", res)
-
-    if (res && res.code === 0) {
-      user.value = res.data
-    } else {
-      alert(res?.msg || "登录状态异常，请重新登录")
-      router.push('/login')
-    }
-  } catch (e) {
-    console.error("getUserInfo error", e)
-    alert("服务器异常，请重新登录")
-    router.push('/login')
+  const res = await api.getBags()
+  if (res && res.code === 0) {
+    bags.value = res.data
   }
 })
 
-const bags = ref({
-  icon:"",
-  name:"",
-  itemId:0,
-  amount:0,
-})
-const sales=ref({
-  is_sale:false,
-  salename:"",
-  itemId:0,
-  amount:0,
-  salenum:1,
-})
-onMounted(async () => {
-  const res = await api.getBags()
-  bags.value = res.data
-})
-const sale=(Id,name,acount)=>{
-  sales.value.amount=acount,
-      sales.value.itemId=Id,
-      sales.value.salename=name,
-      sales.value.is_sale=true
+const sale = (Id, name, acount) => {
+  sales.value.amount = acount
+  sales.value.itemId = Id
+  sales.value.salename = name
+  sales.value.is_sale = true
 }
-const remove=()=>{
-  sales.value.is_sale=false
-  sales.value.salenum=1
+
+const remove = () => {
+  sales.value.is_sale = false
+  sales.value.salenum = 1
 }
-const confirm=async ()=>{
+
+const confirm = async () => {
   if (sales.value.salenum < 1 || sales.value.salenum > sales.value.amount) {
     alert('出售数量无效')
     return
   }
-  const res = await api.saleItem(sales.value.itemId,sales.value.salenum)
-  sales.value.is_sale=false
-  sales.value.salenum=1
-  // 重新加载背包数据
-  const bagsRes = await api.getBags();
-  if (bagsRes && bagsRes.code === 0) {
-    bags.value = bagsRes.data;
-  }
 
-  alert(res.msg)
+  try {
+    const res = await api.saleItem(sales.value.itemId, sales.value.salenum)
+
+    if (res && res.code === 0) {
+      // 1. 重新加载背包数据
+      const bagsRes = await api.getBags();
+      if (bagsRes && bagsRes.code === 0) {
+        bags.value = bagsRes.data;
+      }
+
+      // 2. 刷新用户信息（金币数量）
+      if (userInfoRef.value && userInfoRef.value.refreshUserInfo) {
+        await userInfoRef.value.refreshUserInfo();
+      }
+
+      alert(res.msg || '出售成功')
+    } else {
+      alert(res?.msg || '出售失败')
+    }
+  } catch (error) {
+    console.error("出售错误:", error)
+    alert('出售失败，请重试')
+  } finally {
+    // 关闭出售弹窗
+    sales.value.is_sale = false
+    sales.value.salenum = 1
+  }
 }
 </script>
-
 
 <style scoped>
 .page-wrap {
   max-width: 1100px;
   margin: 80px auto 0;
   padding: 0 20px;
-  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */
-  padding: 20px;
 }
 
 .page-title {
