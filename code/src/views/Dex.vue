@@ -3,6 +3,7 @@
   <!-- 使用用户信息卡片组件 -->
   <UserInfoCard />
   <div class="page-wrap">
+    <button @click="goHome" class="back-arrow">返回</button>
     <div class="page-title">宠物图鉴</div>
     <div class="dex-section">
       <div class="section-title">
@@ -25,6 +26,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { api } from "@/api/index.js"
 import UserInfoCard from '@/components/UserInfoCard.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const pokedex = ref([])
 const totalPetsCount = ref(0)
@@ -43,6 +46,9 @@ onMounted(async () => {
   }
 })
 
+const goHome = () => {
+  router.push('Home')
+}
 const petsCollectedCount = computed(() =>
     pokedex.value.filter(p => p.collected).length
 )

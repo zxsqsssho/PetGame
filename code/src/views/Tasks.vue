@@ -3,6 +3,7 @@
   <!-- 使用用户信息卡片组件，并添加ref以便调用组件方法 -->
   <UserInfoCard ref="userInfoRef" />
   <div class="page-wrap">
+    <button @click="goHome" class="back-arrow">返回</button>
     <div class="page-title">背包</div>
 
     <div class="bag-list">
@@ -35,7 +36,11 @@ import { api } from '@/api/index.js'
 import {useRouter} from "vue-router";
 import UserInfoCard from '@/components/UserInfoCard.vue'
 
+
 const router = useRouter()
+const goHome = () => {
+  router.push('Home')
+}
 const userInfoRef = ref(null) // 添加对UserInfoCard组件的引用
 
 // 删除原来的user定义和onMounted中的获取用户信息逻辑

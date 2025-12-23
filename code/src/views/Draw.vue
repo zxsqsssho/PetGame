@@ -3,8 +3,8 @@
   <!-- 使用用户信息卡片组件 -->
   <UserInfoCard />
   <div class="page-wrap">
+    <button @click="goHome" class="back-arrow">返回</button>
     <div class="page-title">抽奖</div>
-
     <div class="draw-panel">
 
       <!-- 左侧抽奖区 -->
@@ -62,8 +62,13 @@
 import { onMounted, ref, reactive, onBeforeUnmount } from 'vue'
 import { api } from '@/api'
 import UserInfoCard from '@/components/UserInfoCard.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const results = ref([])
+const goHome = () => {
+  router.push('Home')
+}
 
 onMounted(() => {
   // 锁死页面滚动

@@ -3,6 +3,7 @@
   <!-- 使用用户信息卡片组件 -->
   <UserInfoCard />
   <div class="page-wrap">
+    <button @click="goHome" class="back-arrow">返回</button>
     <div class="page-title">探索</div>
 
     <div class="locations">
@@ -27,8 +28,13 @@
 import { ref } from 'vue'
 import { api } from '@/api/index.js'
 import UserInfoCard from '@/components/UserInfoCard.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const user = ref({ level: 5 })
+const goHome = () => {
+  router.push('Home')
+}
 
 const locations = ref([
   { id: 1, name: '公园', level: 1, fatigue: 10, icon: '🌳' },
