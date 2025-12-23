@@ -130,10 +130,23 @@ public class GachaServlet extends HttpServlet {
                 rarity = "normal";
 
             } else if ("pet".equals(rewardType)) {
+                //查询pets_base获取该宠物的疲劳值上限
+                PreparedStatement psFatigue = conn.prepareStatement("SELECT fatigue_max FROM pets_base WHERE id=?");
+                psFatigue.setInt(1, rewardId);
+                ResultSet rsFatigue = psFatigue.executeQuery();
+                int fatigueMax = 10; // 默认值
+                if (rsFatigue.next()) {
+                    fatigueMax = rsFatigue.getInt("fatigue_max"); // 从表中获取实际值
+                }
+
+
+                // 插入user_pets时，显式设置fatigue_max
                 PreparedStatement ps =
-                        conn.prepareStatement("INSERT INTO user_pets(user_id, pet_id) VALUES (?,?)");
+                        conn.prepareStatement("INSERT INTO user_pets(user_id, pet_id, fatigue, fatigue_max, is_active) " +
+                                "VALUES (?, ?, 0, ?, 0)");
                 ps.setInt(1, userId);
                 ps.setInt(2, rewardId);
+                ps.setInt(3, fatigueMax); // 设置正确的疲劳上限
                 ps.executeUpdate();
 
                 PreparedStatement psName =

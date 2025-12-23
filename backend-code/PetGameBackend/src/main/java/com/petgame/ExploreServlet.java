@@ -186,17 +186,27 @@ public class ExploreServlet extends HttpServlet {
                 int maxId = (locId == 1) ? 5 : (locId == 2 ? 10 : 15);
                 int randomId = new Random().nextInt(maxId - minId + 1) + minId;
 
+                // 新增：查询pets_base获取该宠物的疲劳值上限
+                PreparedStatement psFatigue = conn.prepareStatement("SELECT fatigue_max FROM pets_base WHERE id=?");
+                psFatigue.setInt(1, randomId);
+                ResultSet rsFatigue = psFatigue.executeQuery();
+                int fatigueMax = 10; // 默认值（若表中无该字段或查询失败）
+                if (rsFatigue.next()) {
+                    fatigueMax = rsFatigue.getInt("fatigue_max"); // 从表中获取实际值
+                }
+
                 PreparedStatement psName = conn.prepareStatement("SELECT name FROM pets_base WHERE id=?");
                 psName.setInt(1, randomId);
                 ResultSet rsName = psName.executeQuery();
                 String name = rsName.next() ? rsName.getString("name") : "未知宠物";
 
-                // 插入新宠物（不激活），使用默认疲劳上限（从 pets_base 获取更佳，此处简化）
+                // 插入新宠物时，使用从pets_base获取的fatigueMax
                 String ins2 = "INSERT INTO user_pets(user_id, pet_id, fatigue, fatigue_max, is_active) " +
-                        "VALUES(?, ?, 0, 100, 0)";
+                        "VALUES(?, ?, 0, ?, 0)";
                 PreparedStatement ps5 = conn.prepareStatement(ins2);
                 ps5.setInt(1, userId);
                 ps5.setInt(2, randomId);
+                ps5.setInt(3, fatigueMax); // 设置正确的疲劳上限
                 ps5.executeUpdate();
 
                 data.addProperty("message", "获得宠物: " + name);
