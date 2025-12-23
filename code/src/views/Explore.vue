@@ -9,11 +9,9 @@
       <div v-for="loc in locations" :key="loc.id" class="loc-card">
         <div class="loc-icon">{{ loc.icon }}</div>
         <div class="loc-name">{{ loc.name }}</div>
-        <div class="loc-meta">等级要求: Lv.{{ loc.level }} · 疲劳 +{{ loc.fatigue }}</div>
+        <div class="loc-meta"> 疲劳 +{{ loc.fatigue }}</div>
         <div class="loc-actions">
-          <button :disabled="user.level < loc.level" @click="explore(loc)">
-            {{ user.level >= loc.level ? '开始探索' : '等级不足' }}
-          </button>
+          <button @click="explore(loc)">开始探索</button>
         </div>
       </div>
     </div>
@@ -55,7 +53,12 @@ const explore = async (loc) => {
 .page-wrap { max-width: 1100px; margin: 40px auto; padding: 0 20px;  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */padding: 20px;}
 .page-title { font-size: 28px; font-weight: 700; margin-bottom: 18px; }
 
-.locations { display: flex; gap: 20px; }
+.locations {
+  display: flex;
+  gap: 20px;
+  justify-content: center; /* 水平居中所有卡片 */
+}
+
 .loc-card { background: #fff; padding: 18px; border-radius: 12px; width: 260px; text-align: center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
 .loc-icon { font-size: 40px; margin-bottom: 8px; }
 .loc-name { font-size: 18px; font-weight: 700; }

@@ -4,7 +4,7 @@
 
   <div class="page-wrap">
     <div class="page-title">商店</div>
-    <div class="page-subtitle">购买道具以帮助你的宠物成长</div>
+    <div class="page-subtitle">购买道具以帮助你的宠物缓解疲劳</div>
 
     <div class="shop-panel">
       <div v-if="items.length === 0" class="empty-tip">

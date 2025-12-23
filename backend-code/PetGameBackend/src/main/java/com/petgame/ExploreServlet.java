@@ -84,12 +84,22 @@ public class ExploreServlet extends HttpServlet {
                 ps2.setInt(2, userId);
                 ps2.executeUpdate();
                 data.addProperty("message", "获得金币: " + amount);
-            } else if ("item".equals(type)) {
+            } else if ("item_range".equals(type)) {
+                // 从 food_base 随机 id
+                int minId = (locId == 1) ? 1 : (locId == 2 ? 6 : 11);
+                int maxId = (locId == 1) ? 5 : (locId == 2 ? 10 : 15);
+                int randomId = new Random().nextInt(maxId - minId + 1) + minId;
+
+                // 查食物名称
+                PreparedStatement psName = conn.prepareStatement("SELECT name FROM food_base WHERE id=?");
+                psName.setInt(1, randomId);
+                ResultSet rsName = psName.executeQuery();
+                String name = rsName.next() ? rsName.getString("name") : "未知食物";
+
                 // 增加道具
-                // 检查是否已有该道具
                 String sel = "SELECT id,amount FROM user_items WHERE user_id=? AND item_id=?";
                 PreparedStatement ps3 = conn.prepareStatement(sel);
-                ps3.setInt(1, userId); ps3.setInt(2, itemId);
+                ps3.setInt(1, userId); ps3.setInt(2, randomId);
                 ResultSet rs3 = ps3.executeQuery();
                 if (rs3.next()) {
                     String up2 = "UPDATE user_items SET amount = amount + ? WHERE id=?";
@@ -100,18 +110,27 @@ public class ExploreServlet extends HttpServlet {
                 } else {
                     String ins = "INSERT INTO user_items(user_id,item_id,amount) VALUES(?,?,?)";
                     PreparedStatement ps4 = conn.prepareStatement(ins);
-                    ps4.setInt(1, userId); ps4.setInt(2, itemId); ps4.setInt(3, amount);
+                    ps4.setInt(1, userId); ps4.setInt(2, randomId); ps4.setInt(3, amount);
                     ps4.executeUpdate();
                 }
-                data.addProperty("message", "获得道具ID " + itemId + " x" + amount);
-            } else if ("pet".equals(type)) {
-                // 增加宠物
+                data.addProperty("message", "获得食物: " + name);
+            } else if ("pet_range".equals(type)) {
+                int minId = (locId == 1) ? 1 : (locId == 2 ? 6 : 11);
+                int maxId = (locId == 1) ? 5 : (locId == 2 ? 10 : 15);
+                int randomId = new Random().nextInt(maxId - minId + 1) + minId;
+
+                // 查宠物名称
+                PreparedStatement psName = conn.prepareStatement("SELECT name FROM pets_base WHERE id=?");
+                psName.setInt(1, randomId);
+                ResultSet rsName = psName.executeQuery();
+                String name = rsName.next() ? rsName.getString("name") : "未知宠物";
+
                 String ins2 = "INSERT INTO user_pets(user_id,pet_id) VALUES(?,?)";
                 PreparedStatement ps5 = conn.prepareStatement(ins2);
                 ps5.setInt(1, userId);
-                ps5.setInt(2, itemId);
+                ps5.setInt(2, randomId);
                 ps5.executeUpdate();
-                data.addProperty("message", "获得宠物ID " + itemId);
+                data.addProperty("message", "获得宠物: " + name);
             }
             // 返回结果
             res.addProperty("code", 0);
