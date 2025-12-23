@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 23/12/2025 22:05:46
+ Date: 23/12/2025 22:44:29
 */
 
 SET NAMES utf8mb4;
@@ -160,7 +160,7 @@ CREATE TABLE `gacha_pool`  (
 INSERT INTO `gacha_pool` VALUES (1, 'normal', 'coin', 1, 200, 5, 'normal', '金币');
 INSERT INTO `gacha_pool` VALUES (2, 'normal', 'pet', 1, 5, 2, 'normal', '普通宠物');
 INSERT INTO `gacha_pool` VALUES (3, 'normal', 'food', 1, 5, 3, 'normal', '普通食物');
-INSERT INTO `gacha_pool` VALUES (4, 'advanced', 'coin', 100, 500, 4, 'normal', '金币');
+INSERT INTO `gacha_pool` VALUES (4, 'advanced', 'coin', 300, 1000, 4, 'normal', '金币');
 INSERT INTO `gacha_pool` VALUES (5, 'advanced', 'pet', 6, 10, 2, 'rare', '稀有宠物');
 INSERT INTO `gacha_pool` VALUES (6, 'advanced', 'food', 6, 10, 2, 'rare', '高级食物');
 INSERT INTO `gacha_pool` VALUES (7, 'advanced', 'pet', 11, 15, 1, 'epic', '史诗宠物');
