@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 22/12/2025 21:40:37
+ Date: 23/12/2025 16:41:04
 */
 
 SET NAMES utf8mb4;
@@ -228,14 +228,14 @@ CREATE TABLE `shop_items`  (
 -- ----------------------------
 -- Records of shop_items
 -- ----------------------------
-INSERT INTO `shop_items` VALUES (1, '鱼干', 20, '适合小猫食用', NULL, 1, 2);
-INSERT INTO `shop_items` VALUES (2, '骨头', 20, '适合小狗食用', NULL, 1, 2);
-INSERT INTO `shop_items` VALUES (3, '种子', 20, '适合麻雀食用', NULL, 1, 2);
-INSERT INTO `shop_items` VALUES (4, '坚果', 20, '适合松鼠食用', NULL, 1, 2);
-INSERT INTO `shop_items` VALUES (5, '胡萝卜', 20, '适合白兔食用', NULL, 1, 2);
-INSERT INTO `shop_items` VALUES (6, '普通抽奖券', 100, '可进行一次普通抽奖', NULL, 0, 0);
-INSERT INTO `shop_items` VALUES (7, '高级食物', 300, '所有宠物都能吃，降低更多疲劳值', NULL, 1, 50);
-INSERT INTO `shop_items` VALUES (8, '高级抽奖券', 500, '可进行一次高级抽奖', NULL, 0, 0);
+INSERT INTO `shop_items` VALUES (1, '鱼干', 20, '适合小猫食用', '/shop/鱼干.png', 1, 2);
+INSERT INTO `shop_items` VALUES (2, '骨头', 20, '适合小狗食用', '/shop/骨头.png', 1, 2);
+INSERT INTO `shop_items` VALUES (3, '种子', 20, '适合麻雀食用', '/shop/种子.png', 1, 2);
+INSERT INTO `shop_items` VALUES (4, '坚果', 20, '适合松鼠食用', '/shop/坚果.png', 1, 2);
+INSERT INTO `shop_items` VALUES (5, '胡萝卜', 20, '适合白兔食用', '/shop/胡萝卜.png', 1, 2);
+INSERT INTO `shop_items` VALUES (6, '普通抽奖券', 100, '可进行一次普通抽奖', '/shop/普通抽奖券.png', 0, 0);
+INSERT INTO `shop_items` VALUES (7, '高级食物', 300, '所有宠物都能吃，降低更多疲劳值', '/shop/高级食物.png', 1, 50);
+INSERT INTO `shop_items` VALUES (8, '高级抽奖券', 500, '可进行一次高级抽奖', '/shop/高级抽奖券.png', 0, 0);
 
 -- ----------------------------
 -- Table structure for user_items
