@@ -81,10 +81,14 @@ const draw = async (type) => {
     else if (d.rarity === 'rare') rarityText = '【稀有】'
     else rarityText = '【普通】'
 
+    // 展示抽奖结果
     results.value.unshift({
       rarity: d.rarity,
       text: `${rarityText} ${d.rewardName}`
     })
+
+    // ⭐ 抽奖成功 → 统一刷新金币
+    window.dispatchEvent(new Event('refresh-user-info'))
 
     // ✅ 成功一定要 return
     return { ok: true }

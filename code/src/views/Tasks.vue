@@ -103,6 +103,10 @@ const confirm=async ()=>{
     bags.value = bagsRes.data;
   }
 
+  //刷新金币
+  window.dispatchEvent(new Event('refresh-user-info'))
+
+
   alert(res.msg)
 }
 </script>
