@@ -3,6 +3,7 @@
   <UserInfoCard />
 
   <div class="page-wrap">
+    <button @click="goHome" class="back-arrow">返回</button>
     <div class="page-title">商店</div>
     <div class="page-subtitle">购买道具以帮助你的宠物缓解疲劳</div>
 
@@ -50,6 +51,8 @@
 import { ref, onMounted } from 'vue'
 import { api } from '@/api'
 import UserInfoCard from '@/components/UserInfoCard.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const items = ref([])
 
@@ -65,6 +68,9 @@ onMounted(async () => {
     alert('加载商店失败')
   }
 })
+const goHome = () => {
+  router.push('Home')
+}
 
 const buy = async (item) => {
   try {

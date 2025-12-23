@@ -3,6 +3,7 @@
   <!-- 使用用户信息卡片组件 -->
   <UserInfoCard />
   <div class="page-wrap">
+    <button @click="goHome" class="back-arrow">返回</button>
     <div class="page-title">宠物</div>
     <div v-if="carriedPet" class="carried-banner">
       当前携带：{{ carriedPet.nickname }}
@@ -64,6 +65,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { api } from '@/api/index.js'
 import UserInfoCard from "@/components/UserInfoCard.vue";
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const pets = ref([])
 const selectedPet = ref(null)
@@ -82,6 +85,9 @@ onMounted(async () => {
     alert('网络错误，请重试')
   }
 })
+const goHome = () => {
+  router.push('Home')
+}
 
 // 计算当前携带的宠物
 const carriedPet = computed(() => {
