@@ -160,4 +160,54 @@ const getRarityName = (rarity) => {
     padding: 0 10px;
   }
 }
+
+/* 仅修改原有.back-arrow类的样式，保持模板不变 */
+.back-arrow {
+  /* 基础样式 - 与卡片风格统一 */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* 图标与文字间距 */
+  padding: 8px 16px;
+  background-color: #f5f7fa; /* 浅灰背景，呼应输入框/卡片风格 */
+  color: #333; /* 文字颜色 */
+  border: 1px solid #eee; /* 细边框，与卡片边框呼应 */
+  border-radius: 8px; /* 圆角，接近卡片卡片的10px稍小，保持层次 */
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease; /* 统一过渡动画 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04); /* 轻微阴影，增强立体感 */
+  margin-bottom: 20px; /* 与下方标题保持距离 */
+}
+
+/* 图标样式强化 */
+.back-arrow::before {
+  content: "←"; /* 保持原箭头图标 */
+  font-size: 16px; /* 图标稍大于文字 */
+}
+
+/* hover状态 - 与卡片hover效果呼应 */
+.back-arrow:hover {
+  background-color: #e8ebf0; /* 背景加深 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06); /* 阴影增强 */
+  transform: translateY(-1px); /* 轻微上浮，与卡片hover动效一致 */
+}
+
+/* 点击状态 */
+.back-arrow:active {
+  transform: translateY(0); /* 恢复原位 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); /* 阴影减弱 */
+}
+
+/* 响应式适配 - 小屏幕调整 */
+@media (max-width: 768px) {
+  .back-arrow {
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+
+  .back-arrow::before {
+    font-size: 14px;
+  }
+}
 </style>
