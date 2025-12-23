@@ -23,6 +23,7 @@ export const api = {
 
     // 图鉴
     getDexPets: () => instance.get("/dex/pets").then(r => r.data),
+
     // 宠物
     getPets: () =>
         instance.get("/pets/list").then(r => r.data),

@@ -10,7 +10,7 @@
       </div>
       <div class="grid">
         <div v-for="entry in pokedex" :key="entry.id" class="dex-card">
-          <div class="dex-icon">{{ entry.icon }}</div>
+          <img v-if="entry.icon && entry.icon.endsWith('.png')" :src="entry.icon" class="dex-icon-img" alt="Pet Icon"/>
           <div class="dex-name">{{ entry.name }}</div>
           <div class="dex-rarity">{{ getRarityName(entry.rarity) }}</div>
           <div class="dex-desc">{{ entry.description }}</div>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { api } from "@/api/index.js"
 import UserInfoCard from '@/components/UserInfoCard.vue'
 
@@ -61,8 +61,12 @@ const getRarityName = (rarity) => {
 .page-wrap { max-width:1100px; margin:40px auto; padding:0 20px;  margin-top: 80px; /* 为固定定位的用户信息卡片留出空间 */padding: 20px;}
 .page-title { font-size:28px; font-weight:700; margin-bottom:18px; }
 .grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:18px; }
-.dex-card { background:#fff; padding:12px; border-radius:10px; text-align:center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
-.dex-icon { font-size:36px; margin-bottom:8px; }
+.dex-card { background:#fff; padding:12px; border-radius:10px; text-align:center;align-items: center; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
+.dex-icon-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
 .dex-name { font-weight:700; }
 .locked { color:#bbb; margin-top:6px; }
 .page-wrap {

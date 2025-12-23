@@ -5,14 +5,14 @@
   <div class="page-wrap">
     <div class="page-title">宠物</div>
     <div v-if="carriedPet" class="carried-banner">
-      当前携带：{{ carriedPet.icon }} {{ carriedPet.nickname }}
+      当前携带：{{ carriedPet.nickname }}
     </div>
     <div v-else class="carried-banner">
       当前未携带宠物，快去携带一只吧！
     </div>
     <div class="grid">
       <div v-for="pet in pets" :key="pet.id" class="pet-card">
-        <div class="pet-icon">{{ pet.icon }}</div>
+        <img v-if="pet.icon && pet.icon.endsWith('.png')" :src="pet.icon" class="pet-icon-img" alt="Pet Icon"/>
         <div class="pet-name">{{ pet.nickname }}</div>
         <div class="pet-info">疲劳: {{ pet.fatigue }}/{{ pet.fatigueMax }}</div>
         <div class="pet-actions">
@@ -29,7 +29,7 @@
         <div class="detail-info">
           <p>稀有度: {{ getRarityName(selectedPet.rarity) }}</p>
           <p>疲劳度:
-            <span :class="{ 'high-fatigue': selectedPet.fatigue > selectedPet.fatigueMax * 0.8 }">
+            <span>
               {{ selectedPet.fatigue }} / {{ selectedPet.fatigueMax }}
             </span>
           </p>
@@ -196,7 +196,11 @@ const getPreferredFoodName = (key) => {
   text-align: center;
   box-shadow: 0 6px 18px rgba(0,0,0,0.04);
 }
-.pet-icon { font-size: 60px; margin-bottom: 8px; }
+.pet-icon-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
 .pet-name { font-size: 24px; font-weight: 700; }
 .pet-info { color: #777; margin: 8px 0; }
 .pet-actions button {
@@ -233,7 +237,6 @@ const getPreferredFoodName = (key) => {
   color: #333;
 }
 .carried-status { color: #52c41a; font-weight: bold; }
-.high-fatigue { color: #ff4d4f; font-weight: bold; }
 .modal-actions button {
   display: block;
   width: 80%;
@@ -252,12 +255,12 @@ const getPreferredFoodName = (key) => {
   cursor: not-allowed;
 }
 .btn-uncarry {
-  background: #fff2e8 !important;
-  color: #fa8c16 !important;
+  background: #fff2e8;
+  color: #fa8c16;
 }
 .btn-carry {
-  background: #f6ffed !important;
-  color: #52c41a !important;
+  background: #f6ffed;
+  color: #52c41a;
 }
 .btn-close {
   margin-top: 20px;

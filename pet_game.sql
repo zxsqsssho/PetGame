@@ -203,21 +203,21 @@ CREATE TABLE `pets_base`  (
 -- ----------------------------
 -- Records of pets_base
 -- ----------------------------
-INSERT INTO `pets_base` VALUES (1, '小猫', 1, '温顺的猫咪，适合陪伴新手训练师', NULL, 1, 10);
-INSERT INTO `pets_base` VALUES (2, '小狗', 1, '活泼可爱的小狗，喜欢跑来跑去', NULL, 2, 10);
-INSERT INTO `pets_base` VALUES (3, '麻雀', 1, '随处可见的小鸟，但精力充沛', NULL, 3, 10);
-INSERT INTO `pets_base` VALUES (4, '松鼠', 1, '喜欢囤积食物', NULL, 4, 10);
-INSERT INTO `pets_base` VALUES (5, '白兔', 1, '机灵的小兔子，经常四处乱跳', NULL, 5, 10);
-INSERT INTO `pets_base` VALUES (6, '蓝鳍鱼', 2, '闪亮鳍片的蓝色小鱼', NULL, 6, 30);
-INSERT INTO `pets_base` VALUES (7, '电鳗', 2, '身体带电的奇怪生物', NULL, 7, 30);
-INSERT INTO `pets_base` VALUES (8, '水晶鲤', 2, '据说能带来好运的稀有鱼类', NULL, 8, 30);
-INSERT INTO `pets_base` VALUES (9, '深湖妖鱼', 2, '湖泊深处出现的神秘生物', NULL, 9, 30);
-INSERT INTO `pets_base` VALUES (10, '发光水母', 2, '拥有发光触手的灵性水母', NULL, 10, 30);
-INSERT INTO `pets_base` VALUES (11, '石像守卫', 3, '古代遗迹的守门者，体型巨大', NULL, 11, 50);
-INSERT INTO `pets_base` VALUES (12, '遗迹灵魂', 3, '遗迹中残存的能量实体', NULL, 12, 50);
-INSERT INTO `pets_base` VALUES (13, '石羽巨鸟', 3, '传说中俯瞰遗迹的巨鸟', NULL, 13, 50);
-INSERT INTO `pets_base` VALUES (14, '黄金魔像', 3, '由宝石与金属构成的古代造物', NULL, 14, 50);
-INSERT INTO `pets_base` VALUES (15, '遗迹之王', 3, '掌握古代能量的神秘王者', NULL, 15, 50);
+INSERT INTO `pets_base` VALUES (1, '小猫', 1, '温顺的猫咪，适合陪伴新手训练师', '/icons/cat.png', 1, 10);
+INSERT INTO `pets_base` VALUES (2, '小狗', 1, '活泼可爱的小狗，喜欢跑来跑去', '/icons/dog.png', 2, 10);
+INSERT INTO `pets_base` VALUES (3, '麻雀', 1, '随处可见的小鸟，但精力充沛', '/icons/maque.png', 3, 10);
+INSERT INTO `pets_base` VALUES (4, '松鼠', 1, '喜欢囤积食物','/icons/songshu.png', 4, 10);
+INSERT INTO `pets_base` VALUES (5, '白兔', 1, '机灵的小兔子，经常四处乱跳', '/icons/baitu.png', 5, 10);
+INSERT INTO `pets_base` VALUES (6, '蓝鳍鱼', 2, '闪亮鳍片的蓝色小鱼', '/icons/bluefish.png', 6, 30);
+INSERT INTO `pets_base` VALUES (7, '电鳗', 2, '身体带电的奇怪生物', '/icons/dianmang.png', 7, 30);
+INSERT INTO `pets_base` VALUES (8, '水晶鲤', 2, '据说能带来好运的稀有鱼类', '/icons/li.png', 8, 30);
+INSERT INTO `pets_base` VALUES (9, '深湖妖鱼', 2, '湖泊深处出现的神秘生物', '/icons/deepfish.png', 9, 30);
+INSERT INTO `pets_base` VALUES (10, '发光水母', 2, '拥有发光触手的灵性水母', '/icons/deepfish.png', 10, 30);
+INSERT INTO `pets_base` VALUES (11, '石像守卫', 3, '古代遗迹的守门者，体型巨大', '/icons/deepfish.png', 11, 50);
+INSERT INTO `pets_base` VALUES (12, '遗迹灵魂', 3, '遗迹中残存的能量实体', '/icons/deepfish.png', 12, 50);
+INSERT INTO `pets_base` VALUES (13, '石羽巨鸟', 3, '传说中俯瞰遗迹的巨鸟', '/icons/deepfish.png', 13, 50);
+INSERT INTO `pets_base` VALUES (14, '黄金魔像', 3, '由宝石与金属构成的古代造物', '/icons/deepfish.png', 14, 50);
+INSERT INTO `pets_base` VALUES (15, '遗迹之王', 3, '掌握古代能量的神秘王者', '/icons/deepfish.png', 15, 50);
 
 -- ----------------------------
 -- Table structure for shop_items
@@ -308,7 +308,7 @@ CREATE TABLE `user_pets`  (
 -- ----------------------------
 -- Records of user_pets
 -- ----------------------------
-INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫', '2025-12-06 23:10:45', 0, 10, 0);
+INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫', '2025-12-06 23:10:45', 10, 10, 0);
 INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗', '2025-12-06 23:10:45', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (3, 1, 6, '蓝鳍鱼', '2025-12-18 23:14:37', 0, 30, 0);
 INSERT INTO `user_pets` VALUES (4, 2, 1, '我的小猫', '2025-12-23 20:54:22', 0, 10, 1);
@@ -345,7 +345,7 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', NULL, 1111119083, '2025-12-06 23:10:34', '2025-12-23 22:05:25');
+INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', '/avatars/default.jpg', 1111119083, '2025-12-06 23:10:34', '2025-12-23 22:05:25');
 INSERT INTO `users` VALUES (2, 'cst', 'cst', '123456', '/avatars/txone.jpg', 174, '2025-12-23 20:54:22', '2025-12-23 22:05:27');
 INSERT INTO `users` VALUES (3, 'xmm', 'xmm', '123456', '/avatars/txone.jpg', 20, '2025-12-23 21:41:17', '2025-12-23 21:56:55');
 
