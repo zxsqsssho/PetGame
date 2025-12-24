@@ -25,7 +25,7 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // 获取玩家背包中道具列表（合并同一item_id的所有记录，数量相加）
+        // 获取玩家背包中探索道具列表（仅从food_base获取信息，出售价格=道具ID×40）
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         HttpSession session = req.getSession(false);
@@ -42,20 +42,19 @@ public class ItemServlet extends HttpServlet {
         int userId = (int) session.getAttribute("userId");
 
         try (Connection conn = DB.getConn()) {
-            // 关键修改：GROUP BY 聚合同一用户的同一道具，SUM计算总数量
+            // 核心修改：仅关联food_base，价格直接计算为item_id*40，聚合同一道具的总数量
             String sql = "SELECT ui.user_id, ui.item_id, " +
-                    "COALESCE(MAX(si.name), MAX(fb.name), '未知道具') AS name, " +
-                    "COALESCE(MAX(si.icon), MAX(fb.icon), '/icons/default_item.png') AS icon, " +
-                    "SUM(ui.amount) AS amount, " +  // 聚合总数量
-                    "COALESCE(MAX(si.price), 0) AS price, " +
-                    "COALESCE(MAX(si.description), MAX(fb.description), '无描述') AS description, " +
-                    "CASE WHEN MAX(si.id) IS NOT NULL THEN 1 ELSE 0 END AS is_shop_item " +
+                    "COALESCE(fb.name, '未知道具') AS name, " +  // 仅从food_base取名称
+                    "COALESCE(fb.icon, '/icons/default_item.png') AS icon, " +  // 仅从food_base取图标
+                    "SUM(ui.amount) AS amount, " +  // 聚合同一道具的总数量
+                    "(ui.item_id * 40) AS price, " +  // 出售价格=道具ID×40
+                    "COALESCE(fb.description, '无描述') AS description, " +  // 仅从food_base取描述
+                    "0 AS is_shop_item " +  // 固定为非商店道具（探索道具）
                     "FROM user_items ui " +
-                    "LEFT JOIN shop_items si ON ui.item_id = si.id " +
-                    "LEFT JOIN food_base fb ON ui.item_id = fb.id " +
+                    "LEFT JOIN food_base fb ON ui.item_id = fb.id " +  // 仅关联探索道具表
                     "WHERE ui.user_id=? " +
-                    "GROUP BY ui.user_id, ui.item_id " +  // 按用户+道具ID分组
-                    "ORDER BY is_shop_item DESC, ui.item_id ASC";
+                    "GROUP BY ui.user_id, ui.item_id, fb.name, fb.icon, fb.description " +
+                    "ORDER BY ui.item_id ASC";
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -67,10 +66,10 @@ public class ItemServlet extends HttpServlet {
                 it.addProperty("itemId", rs.getInt("item_id"));
                 it.addProperty("name", rs.getString("name"));
                 it.addProperty("icon", rs.getString("icon"));
-                it.addProperty("amount", rs.getInt("amount"));  // 总数量
-                it.addProperty("price", rs.getInt("price"));
+                it.addProperty("amount", rs.getInt("amount"));  // 合并后的总数量
+                it.addProperty("price", rs.getInt("price"));  // 价格=ID×40
                 it.addProperty("description", rs.getString("description"));
-                it.addProperty("isShopItem", rs.getInt("is_shop_item") == 1);
+                it.addProperty("isShopItem", rs.getInt("is_shop_item") == 1);  // 固定为false
                 arr.add(it);
             }
 
@@ -90,7 +89,7 @@ public class ItemServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-        // 出售玩家背包中道具（支持商店道具+探索道具，基于总数量校验/扣减）
+        // 出售玩家背包中道具（支持探索道具，价格=道具ID×40）
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         HttpSession session = req.getSession(false);
@@ -123,17 +122,14 @@ public class ItemServlet extends HttpServlet {
                 conn.setAutoCommit(false);
 
                 try {
-                    // 【修改1】查询总数量+道具类型（聚合所有同item_id的记录）
+                    // 查询总数量+探索道具信息（仅关联food_base）
                     String checkSql = "SELECT " +
                             "SUM(ui.amount) AS total_amount, " +  // 总数量
-                            "COALESCE(MAX(si.price), 0) AS shop_price, " +
-                            "CASE WHEN MAX(si.id) IS NOT NULL THEN 1 ELSE 0 END AS is_shop_item, " +
-                            "CASE WHEN MAX(fb.id) IS NOT NULL THEN 1 ELSE 0 END AS is_explore_item " +
+                            "CASE WHEN fb.id IS NOT NULL THEN 1 ELSE 0 END AS is_explore_item " +
                             "FROM user_items ui " +
-                            "LEFT JOIN shop_items si ON ui.item_id = si.id " +
                             "LEFT JOIN food_base fb ON ui.item_id = fb.id " +
                             "WHERE ui.user_id = ? AND ui.item_id = ? " +
-                            "GROUP BY ui.user_id, ui.item_id";
+                            "GROUP BY ui.user_id, ui.item_id, fb.id";
 
                     PreparedStatement checkPs = conn.prepareStatement(checkSql);
                     checkPs.setInt(1, userId);
@@ -148,23 +144,12 @@ public class ItemServlet extends HttpServlet {
                     }
 
                     int totalAmount = checkRs.getInt("total_amount");  // 总数量
-                    int shopPrice = checkRs.getInt("shop_price");
-                    boolean isShopItem = checkRs.getInt("is_shop_item") == 1;
                     boolean isExploreItem = checkRs.getInt("is_explore_item") == 1;
 
-                    // 仅禁止非商店/非探索的无效道具
-                    if (!isShopItem && !isExploreItem) {
+                    // 仅允许food_base中存在的探索道具出售
+                    if (!isExploreItem) {
                         res.addProperty("code", 6);
                         res.addProperty("msg", "该道具无法出售");
-                        res.add("data", null);
-                        out.print(gson.toJson(res));
-                        return;
-                    }
-
-                    // 仅对商店道具检查价格有效性
-                    if (isShopItem && shopPrice <= 0) {
-                        res.addProperty("code", 7);
-                        res.addProperty("msg", "该道具不可出售");
                         res.add("data", null);
                         out.print(gson.toJson(res));
                         return;
@@ -178,44 +163,47 @@ public class ItemServlet extends HttpServlet {
                         return;
                     }
 
-                    // 计算出售价格
-                    int sellPrice;
-                    if (isShopItem) {
-                        // 商店道具：原价半价出售
-                        sellPrice = (int) (shopPrice * 0.5 * saleAmount);
-                    } else {
-                        // 探索道具：itemId × 40 × 出售数量
-                        sellPrice = itemId * 40 * saleAmount;
-                    }
+                    // 探索道具出售价格：itemId × 40 × 出售数量
+                    int sellPrice = itemId * 40 * saleAmount;
 
-                    // 【修改2】逐条扣减/删除记录，直到扣够saleAmount
+                    // 核心逻辑：判断是否全额出售（出售后数量为0）
                     int remainingToSell = saleAmount;
-                    // 查询该道具的所有记录（按ID升序，优先扣减旧记录）
-                    String listItemsSql = "SELECT id, amount FROM user_items WHERE user_id = ? AND item_id = ? ORDER BY id ASC";
-                    PreparedStatement listPs = conn.prepareStatement(listItemsSql);
-                    listPs.setInt(1, userId);
-                    listPs.setInt(2, itemId);
-                    ResultSet itemRs = listPs.executeQuery();
+                    if (saleAmount == totalAmount) {
+                        // 全额出售：直接删除该用户下该道具的所有记录
+                        String deleteAllSql = "DELETE FROM user_items WHERE user_id = ? AND item_id = ?";
+                        PreparedStatement deleteAllPs = conn.prepareStatement(deleteAllSql);
+                        deleteAllPs.setInt(1, userId);
+                        deleteAllPs.setInt(2, itemId);
+                        deleteAllPs.executeUpdate();
+                        remainingToSell = 0; // 标记为已扣减完成
+                    } else {
+                        // 非全额出售：逐条扣减/删除记录
+                        String listItemsSql = "SELECT id, amount FROM user_items WHERE user_id = ? AND item_id = ? ORDER BY id ASC";
+                        PreparedStatement listPs = conn.prepareStatement(listItemsSql);
+                        listPs.setInt(1, userId);
+                        listPs.setInt(2, itemId);
+                        ResultSet itemRs = listPs.executeQuery();
 
-                    while (itemRs.next() && remainingToSell > 0) {
-                        int recordId = itemRs.getInt("id");
-                        int recordAmount = itemRs.getInt("amount");
+                        while (itemRs.next() && remainingToSell > 0) {
+                            int recordId = itemRs.getInt("id");
+                            int recordAmount = itemRs.getInt("amount");
 
-                        if (recordAmount <= remainingToSell) {
-                            // 该记录数量不足，直接删除
-                            String deleteSql = "DELETE FROM user_items WHERE id = ?";
-                            PreparedStatement deletePs = conn.prepareStatement(deleteSql);
-                            deletePs.setInt(1, recordId);
-                            deletePs.executeUpdate();
-                            remainingToSell -= recordAmount;
-                        } else {
-                            // 该记录数量足够，扣减部分数量
-                            String updateSql = "UPDATE user_items SET amount = amount - ? WHERE id = ?";
-                            PreparedStatement updatePs = conn.prepareStatement(updateSql);
-                            updatePs.setInt(1, remainingToSell);
-                            updatePs.setInt(2, recordId);
-                            updatePs.executeUpdate();
-                            remainingToSell = 0;
+                            if (recordAmount <= remainingToSell) {
+                                // 该记录数量不足，直接删除
+                                String deleteSql = "DELETE FROM user_items WHERE id = ?";
+                                PreparedStatement deletePs = conn.prepareStatement(deleteSql);
+                                deletePs.setInt(1, recordId);
+                                deletePs.executeUpdate();
+                                remainingToSell -= recordAmount;
+                            } else {
+                                // 该记录数量足够，扣减部分数量
+                                String updateSql = "UPDATE user_items SET amount = amount - ? WHERE id = ?";
+                                PreparedStatement updatePs = conn.prepareStatement(updateSql);
+                                updatePs.setInt(1, remainingToSell);
+                                updatePs.setInt(2, recordId);
+                                updatePs.executeUpdate();
+                                remainingToSell = 0;
+                            }
                         }
                     }
 
