@@ -31,7 +31,7 @@ public class ShopServlet extends HttpServlet {
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         try (Connection conn = DB.getConn()) {
-            String sql = "SELECT id,name,price,description,icon FROM shop_items";
+            String sql = "SELECT id,name,price,description,icon FROM shop_items where price>0";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             JsonArray arr = new JsonArray();

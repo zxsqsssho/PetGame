@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 24/12/2025 10:07:27
+ Date: 24/12/2025 10:40:29
 */
 
 SET NAMES utf8mb4;
@@ -206,7 +206,7 @@ CREATE TABLE `shop_items`  (
   `is_food` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否为食物',
   `food_power` int(11) NULL DEFAULT 0 COMMENT '恢复疲劳值',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '商店物品表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '商店物品表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of shop_items
@@ -216,7 +216,17 @@ INSERT INTO `shop_items` VALUES (2, '骨头', 20, '适合小狗食用', '/shop/�
 INSERT INTO `shop_items` VALUES (3, '种子', 20, '适合麻雀食用', '/shop/种子.png', 1, 2);
 INSERT INTO `shop_items` VALUES (4, '坚果', 20, '适合松鼠食用', '/shop/坚果.png', 1, 2);
 INSERT INTO `shop_items` VALUES (5, '胡萝卜', 20, '适合白兔食用', '/shop/胡萝卜.png', 1, 2);
-INSERT INTO `shop_items` VALUES (6, '高级食物', 300, '所有宠物都能吃，降低更多疲劳值', '/shop/高级食物.png', 1, 50);
+INSERT INTO `shop_items` VALUES (6, '小鱼虾', 0, '适合蓝鳍鱼食用', '/shop/小鱼虾.png', 0, 0);
+INSERT INTO `shop_items` VALUES (7, '电能饵', 0, '适合电鳗食用', '/shop/电能饵.png', 0, 0);
+INSERT INTO `shop_items` VALUES (8, '水晶藻', 0, '适合水晶鲤食用', '/shop/水晶藻.png', 0, 0);
+INSERT INTO `shop_items` VALUES (9, '深湖肉块', 0, '适合深湖妖鱼食用', '/shop/深湖肉块.png', 0, 0);
+INSERT INTO `shop_items` VALUES (10, '荧光浮游生物', 0, '适合发光水母食用', '/shop/荧光浮游生物.png', 0, 0);
+INSERT INTO `shop_items` VALUES (11, '魔能矿石', 0, '适合石像守卫食用', '/shop/魔能矿石.png', 0, 0);
+INSERT INTO `shop_items` VALUES (12, '灵魂碎片', 0, '适合遗迹灵魂食用', '/shop/灵魂碎片.png', 0, 0);
+INSERT INTO `shop_items` VALUES (13, '巨鸟果实', 0, NULL, '/shop/巨鸟果实.png', 0, 0);
+INSERT INTO `shop_items` VALUES (14, '金属能量块', 0, NULL, '/shop/金属能量块.png', 0, 0);
+INSERT INTO `shop_items` VALUES (15, '古代核心', 0, NULL, '/shop/古代核心.png', 0, 0);
+INSERT INTO `shop_items` VALUES (16, '高级食物', 300, '所有宠物都能吃，降低更多疲劳值', '/shop/高级食物.png', 1, 50);
 
 -- ----------------------------
 -- Table structure for user_items
@@ -231,7 +241,7 @@ CREATE TABLE `user_items`  (
   INDEX `user_id`(`user_id`) USING BTREE,
   INDEX `item_id`(`item_id`) USING BTREE,
   CONSTRAINT `user_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '玩家背包表（记录玩家拥有的道具）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_items
@@ -247,6 +257,7 @@ INSERT INTO `user_items` VALUES (58, 1, 9, 1);
 INSERT INTO `user_items` VALUES (59, 1, 13, 1);
 INSERT INTO `user_items` VALUES (60, 1, 10, 1);
 INSERT INTO `user_items` VALUES (61, 1, 10, 1);
+INSERT INTO `user_items` VALUES (62, 1, 16, 1);
 
 -- ----------------------------
 -- Table structure for user_pets
@@ -271,7 +282,7 @@ CREATE TABLE `user_pets`  (
 -- ----------------------------
 -- Records of user_pets
 -- ----------------------------
-INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫', '2025-12-06 23:10:45', 10, 10, 0);
+INSERT INTO `user_pets` VALUES (1, 1, 1, '小猫', '2025-12-06 23:10:45', 0, 10, 1);
 INSERT INTO `user_pets` VALUES (2, 1, 2, '小狗', '2025-12-06 23:10:45', 0, 10, 0);
 INSERT INTO `user_pets` VALUES (3, 1, 6, '蓝鳍鱼', '2025-12-18 23:14:37', 0, 30, 0);
 INSERT INTO `user_pets` VALUES (63, 1, 13, NULL, '2025-12-24 10:05:40', 0, 50, 0);
@@ -296,6 +307,6 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', '/avatars/default.jpg', 1111116297, '2025-12-06 23:10:34', '2025-12-24 10:05:41');
+INSERT INTO `users` VALUES (1, 'admin', '管理员', 'admin', '/avatars/default.jpg', 1111115697, '2025-12-06 23:10:34', '2025-12-24 10:38:11');
 
 SET FOREIGN_KEY_CHECKS = 1;

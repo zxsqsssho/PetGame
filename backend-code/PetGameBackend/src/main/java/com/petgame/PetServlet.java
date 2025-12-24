@@ -143,7 +143,7 @@ public class PetServlet extends HttpServlet {
                     foodRecovery = 20;
 
                     // 检查用户是否有高级食物
-                    String checkFoodSql = "SELECT amount FROM user_items WHERE user_id=? AND item_id=7";
+                    String checkFoodSql = "SELECT amount FROM user_items WHERE user_id=? AND item_id=16";
                     PreparedStatement checkFoodPs = conn.prepareStatement(checkFoodSql);
                     checkFoodPs.setInt(1, userId);
                     ResultSet foodRs = checkFoodPs.executeQuery();
@@ -157,7 +157,7 @@ public class PetServlet extends HttpServlet {
                     }
 
                     // 扣除高级食物
-                    String consumeFoodSql = "UPDATE user_items SET amount = amount - 1 WHERE user_id=? AND item_id=7";
+                    String consumeFoodSql = "UPDATE user_items SET amount = amount - 1 WHERE user_id=? AND item_id=16";
                     PreparedStatement consumeFoodPs = conn.prepareStatement(consumeFoodSql);
                     consumeFoodPs.setInt(1, userId);
                     consumeFoodPs.executeUpdate();
