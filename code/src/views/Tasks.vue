@@ -141,6 +141,8 @@ const confirm = async () => {
 .bag-icon {
   font-size: 36px;
   margin-bottom: 8px;
+  width: 60px;
+  height: 60px;
 }
 
 .bag-name {
