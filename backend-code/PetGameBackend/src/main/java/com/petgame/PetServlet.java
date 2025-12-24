@@ -285,15 +285,21 @@ public class PetServlet extends HttpServlet {
     // 根据食物ID获取食物类型
     private String getFoodTypeById(int foodId) {
         switch (foodId) {
-            case 1: return "fish";
-            case 2: return "bone";
-            case 3: return "seed";
-            case 4: return "nut";
-            case 5: return "carrot";
-            case 6: return "fish_food";
-            case 7: return "golden";
-            case 8: return "plankton";
-            default: return "unknown";
+            case 1: return "鱼干";
+            case 2: return "骨头";
+            case 3: return "种子";
+            case 4: return "坚果";
+            case 5: return "胡萝卜";
+            case 6: return "小鱼虾";
+            case 7: return "电能饵";
+            case 8: return "水晶藻";
+            case 9: return "深湖肉块";
+            case 10: return "荧光浮游生物";
+            case 11: return "魔能矿石";
+            case 12: return "灵魂碎片";
+            case 13: return "巨鸟果实";
+            case 14: return "金属能量块";
+            default: return "古代核心";
         }
     }
 }
